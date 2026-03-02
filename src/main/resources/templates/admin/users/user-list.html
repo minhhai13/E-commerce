@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/admin-layout :: adminHead('Quản lý người dùng')}"></head>
+
+<body>
+
+    <div th:replace="~{fragments/admin-layout :: adminLayout('Quản lý người dùng', ~{::main})}">
+        <main>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">Danh sách người dùng</h5>
+                <a th:href="@{/admin/users/form}" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-user-plus me-1"></i>Thêm người dùng
+                </a>
+            </div>
+
+            <div th:replace="~{fragments/admin-layout :: alerts}"></div>
+
+            <!-- Search bar -->
+            <form th:action="@{/admin/users}" method="get" class="d-flex gap-2 mb-3">
+                <input type="text" name="q" class="form-control" style="max-width:340px"
+                    placeholder="Tìm theo tên hoặc email…" th:value="${q}" />
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-magnifying-glass me-1"></i>Tìm
+                </button>
+                <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-rotate-left me-1"></i>Xoá lọc
+                </a>
+            </form>
+
+            <!-- Table -->
+            <div class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Họ tên</th>
+                                <th>Email</th>
+                                <th>Vai trò</th>
+                                <th>Trạng thái</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${usersPage.content}">
+                                <td th:text="${user.id}"></td>
+                                <td th:text="${user.fullName}"></td>
+                                <td th:text="${user.email}"></td>
+                                <td>
+                                    <!-- Role badge -->
+                                    <span th:switch="${user.role.name()}">
+                                        <span th:case="'ADMIN'" class="badge text-bg-danger">Admin</span>
+                                        <span th:case="'STAFF'" class="badge text-bg-warning">Staff</span>
+                                        <span th:case="'CUSTOMER'" class="badge text-bg-primary">Customer</span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <!-- Status badge -->
+                                    <span th:if="${user.active}" class="badge text-bg-success">Active</span>
+                                    <span th:unless="${user.active}" class="badge text-bg-secondary">Deactivated</span>
+                                </td>
+                                <td class="text-center">
+                                    <!-- Toggle Status -->
+                                    <form th:action="@{/admin/users/toggle/{id}(id=${user.id})}" method="post"
+                                        class="d-inline">
+                                        <input type="hidden" name="q" th:value="${q}" />
+                                        <input type="hidden" name="page" th:value="${currentPage}" />
+                                        <button type="submit" th:title="${user.active} ? 'Vô hiệu hoá' : 'Kích hoạt'"
+                                            th:class="${user.active} ? 'btn btn-sm btn-outline-danger' : 'btn btn-sm btn-outline-success'">
+                                            <i
+                                                th:class="${user.active} ? 'fa-solid fa-ban' : 'fa-solid fa-circle-check'"></i>
+                                        </button>
+                                    </form>
+                                    <!-- Edit button -->
+                                    <a th:href="@{/admin/users/form(id=${user.id})}"
+                                        class="btn btn-sm btn-outline-primary ms-1" title="Chỉnh sửa">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${usersPage.content.empty}">
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    Không tìm thấy người dùng nào.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <nav th:if="${usersPage.totalPages > 1}" class="mt-3">
+                <ul class="pagination pagination-sm mb-0">
+                    <!-- Previous -->
+                    <li th:classappend="${usersPage.first} ? 'disabled'" class="page-item">
+                        <a class="page-link" th:href="@{/admin/users(q=${q}, page=${currentPage - 1})}">
+                            <i class="fa-solid fa-angle-left"></i>
+                        </a>
+                    </li>
+                    <!-- Page numbers -->
+                    <li th:each="i : ${#numbers.sequence(0, usersPage.totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'" class="page-item">
+                        <a class="page-link" th:href="@{/admin/users(q=${q}, page=${i})}" th:text="${i + 1}">1</a>
+                    </li>
+                    <!-- Next -->
+                    <li th:classappend="${usersPage.last} ? 'disabled'" class="page-item">
+                        <a class="page-link" th:href="@{/admin/users(q=${q}, page=${currentPage + 1})}">
+                            <i class="fa-solid fa-angle-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Summary -->
+            <div class="text-muted small mt-2">
+                Hiển thị
+                <span th:text="${usersPage.numberOfElements}">0</span> /
+                <span th:text="${usersPage.totalElements}">0</span> bản ghi
+            </div>
+
+        </main>
+    </div>
+
+    <div th:replace="~{fragments/admin-layout :: adminScripts}"></div>
+</body>
+
+</html>

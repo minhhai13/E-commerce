@@ -1,0 +1,9 @@
+package com.group2.ecommerce.service;
+
+import com.group2.ecommerce.entity.Product;
+import org.springframework.data.domain.Page;
+
+public interface ProductService {
+
+    long countAll();
+}

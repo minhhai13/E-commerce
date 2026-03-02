@@ -78,13 +78,10 @@ public class UserServiceImpl implements UserService {
                 throw new IllegalArgumentException("Email '" + request.getEmail() + "' đã được sử dụng.");
             }
             user = findEntityById(id);
-            if (user.getRole() == Role.ADMIN && request.getRole() != Role.ADMIN) {
-                // Chỉ kiểm tra nếu tài khoản này đang hoạt động
-                if (user.isActive()) {
-                    long activeAdminCount = userRepository.countByRoleAndIsActiveTrue(Role.ADMIN);
-                    if (activeAdminCount <= 1) {
-                        throw new IllegalArgumentException("Không thể thay đổi vai trò của Admin cuối cùng!");
-                    }
+            if (user.isActive() && user.getRole() == Role.ADMIN && request.getRole() != Role.ADMIN) {
+                long activeAdminCount = userRepository.countByRoleAndIsActiveTrue(Role.ADMIN);
+                if (activeAdminCount <= 1) {
+                    throw new IllegalArgumentException("Không thể thay đổi vai trò của Admin cuối cùng!");
                 }
             }
             user.setFullName(request.getFullName());

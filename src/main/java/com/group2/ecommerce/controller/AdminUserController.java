@@ -25,6 +25,7 @@ public class AdminUserController {
     public String listUsers(@RequestParam(defaultValue = "") String q,
                             @RequestParam(defaultValue = "0") int page,
                             Model model) {
+        q=q.trim();
         Page<UserResponse> usersPage = userService.getUsers(q, page);
         model.addAttribute("usersPage", usersPage);
         model.addAttribute("q", q);

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
     private static final String DEFAULT_ADMIN_EMAIL = "admin@gmail.com";
-    private static final String DEFAULT_ADMIN_PASSWORD = "123";
+    private static final String DEFAULT_ADMIN_PASSWORD = "12345678";
     private static final String DEFAULT_ADMIN_FULL_NAME = "System Administrator";
 
     private final UserRepository userRepository;

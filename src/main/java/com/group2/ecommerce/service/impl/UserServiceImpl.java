@@ -1,5 +1,6 @@
 package com.group2.ecommerce.service.impl;
 
+import com.group2.ecommerce.dto.auth.RegisterRequest;
 import com.group2.ecommerce.dto.user.UserRequest;
 import com.group2.ecommerce.dto.user.UserResponse;
 import com.group2.ecommerce.entity.User;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +53,12 @@ public class UserServiceImpl implements UserService {
         return toResponse(findEntityById(id));
     }
 
+    @Override
+    public Optional<User> authenticate(String email, String password) {
+        return userRepository.findByEmail(email)
+                .filter(user -> PasswordUtil.verifyPassword(password, user.getPasswordHash()));
+    }
+
     // ─────────────── Commands ────────────────
     @Override
     @Transactional
@@ -59,10 +68,10 @@ public class UserServiceImpl implements UserService {
         if (id == null) {
             // ── Create ──────────────────────────────────
             if (request.getPassword() == null || request.getPassword().isBlank()) {
-                throw new IllegalArgumentException("Mật khẩu không được để trống khi tạo mới.");
+                throw new IllegalArgumentException("Password is required.");
             }
             if (userRepository.existsByEmail(request.getEmail())) {
-                throw new IllegalArgumentException("Email '" + request.getEmail() + "' đã được sử dụng.");
+                throw new IllegalArgumentException("Email '" + request.getEmail() + "' has been used.");
             }
             user = User.builder()
                     .fullName(request.getFullName())
@@ -75,13 +84,13 @@ public class UserServiceImpl implements UserService {
         } else {
             // ── Update ──────────────────────────────────
             if (userRepository.existsByEmailAndIdNot(request.getEmail(), id)) {
-                throw new IllegalArgumentException("Email '" + request.getEmail() + "' đã được sử dụng.");
+                throw new IllegalArgumentException("Email '" + request.getEmail() + "' has been used.");
             }
             user = findEntityById(id);
             if (user.isActive() && user.getRole() == Role.ADMIN && request.getRole() != Role.ADMIN) {
                 long activeAdminCount = userRepository.countByRoleAndIsActiveTrue(Role.ADMIN);
                 if (activeAdminCount <= 1) {
-                    throw new IllegalArgumentException("Không thể thay đổi vai trò của Admin cuối cùng!");
+                    throw new IllegalArgumentException("Can not change the role of the last admin in the system!");
                 }
             }
             user.setFullName(request.getFullName());
@@ -103,7 +112,7 @@ public class UserServiceImpl implements UserService {
         if (user.isActive() && user.getRole() == Role.ADMIN) {
             long activeAdminCount = userRepository.countByRoleAndIsActiveTrue(Role.ADMIN);
             if (activeAdminCount <= 1) {
-                throw new IllegalArgumentException("Không thể vô hiệu hóa Admin cuối cùng trong hệ thống!");
+                throw new IllegalArgumentException("Can not de active the last admin in the system !");
             }
         }
         user.setActive(!user.isActive());
@@ -115,6 +124,27 @@ public class UserServiceImpl implements UserService {
         return userRepository.count();
     }
 
+    @Override
+    @Transactional
+    public void register(RegisterRequest request) {
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Mật khẩu không được để trống khi đăng ký.");
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email đã được sử dụng.");
+        }
+
+        User user = User.builder()
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .phone(request.getPhone())
+                .passwordHash(PasswordUtil.hashPassword(request.getPassword()))
+                .role(Role.CUSTOMER)
+                .isActive(true)
+                .build();
+
+        userRepository.save(user);
+    }
     // ─────────────── Private helpers ────────────────
     private User findEntityById(Long id) {
         return userRepository.findById(id)

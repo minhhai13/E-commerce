@@ -80,9 +80,15 @@
 
                 <div class="mb-4">
                     <label for="confirmPassword" class="form-label fw-semibold">Xác nhận mật khẩu</label>
-                    <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control"
-                        th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'" />
-                    <div class="invalid-feedback" th:errors="*{confirmPassword}"></div>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                        <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control"
+                            placeholder="Xác nhận mật khẩu"
+                            th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}"
+                            th:errors="*{confirmPassword}">
+                        </div>
+                    </div>
                 </div>
 
                 <input type="hidden" name="role" value="CUSTOMER" />

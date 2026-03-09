@@ -93,7 +93,7 @@ public class LoginController {
             return "redirect:/login";
         } catch (IllegalArgumentException e) {
             ra.addFlashAttribute("error", e.getMessage());
-            ra.addFlashAttribute("userRequest", request);
+            ra.addFlashAttribute("registerRequest", request);
             return "redirect:/register";
         }
     }

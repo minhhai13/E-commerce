@@ -24,6 +24,14 @@
         <div class="card-body p-4">
             <h4 class="card-title text-center mb-4 fw-bold">Đăng ký tài khoản</h4>
 
+            <div th:if="${success}" class="alert alert-success" role="alert">
+                <span th:text="${success}"></span>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <span th:text="${error}"></span>
+            </div>
+
             <form th:action="@{/register}" th:object="${registerRequest}" method="post">
                 <div class="mb-3">
                     <label for="fullName" class="form-label fw-semibold">Họ và tên</label>

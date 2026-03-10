@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/admin-layout :: adminHead(${formTitle})}"></head>
+
+<body>
+    <div th:replace="~{fragments/admin-layout :: adminLayout(${formTitle}, ~{::main})}">
+        <main>
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/products}">Products</a></li>
+                    <li class="breadcrumb-item active" th:text="${formTitle}"></li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm" style="max-width: 700px;">
+                <div class="card-header bg-white fw-semibold" th:text="${formTitle}">Form</div>
+                <div class="card-body">
+
+                    <div th:replace="~{fragments/admin-layout :: alerts}"></div>
+
+                    <form th:action="@{/admin/products/save}" th:object="${productRequest}" method="post" novalidate>
+                        <!-- Hidden ID -->
+                        <input type="hidden" name="productId" th:value="${productId}" />
+
+                        <!-- Product Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Product Name <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" th:field="*{name}"
+                                th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" class="form-control"
+                                placeholder="e.g. iPhone 15 Pro" />
+                            <div class="invalid-feedback" th:errors="*{name}"></div>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
+                            <select th:field="*{categoryId}"
+                                th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid'" class="form-select">
+                                <option value="">-- Select Category --</option>
+                                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{categoryId}"></div>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Price <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" th:field="*{price}" step="0.01" min="0.01"
+                                    th:classappend="${#fields.hasErrors('price')} ? 'is-invalid'" class="form-control"
+                                    placeholder="0.00" />
+                                <div class="invalid-feedback" th:errors="*{price}"></div>
+                            </div>
+                        </div>
+
+                        <!-- Stock Quantity -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Stock Quantity</label>
+                            <input type="number" th:field="*{stockQuantity}" min="0"
+                                th:classappend="${#fields.hasErrors('stockQuantity')} ? 'is-invalid'"
+                                class="form-control" placeholder="0" />
+                            <div class="invalid-feedback" th:errors="*{stockQuantity}"></div>
+                        </div>
+
+                        <!-- Image URL -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Image URL</label>
+                            <input type="text" th:field="*{imageName}" class="form-control"
+                                placeholder="https://example.com/image.jpg" />
+                            <!-- Preview -->
+                            <div class="mt-2"
+                                th:if="${productRequest.imageName != null and !#strings.isEmpty(productRequest.imageName)}">
+                                <img th:src="${productRequest.imageName}" alt="Preview"
+                                    style="max-height:120px;border-radius:6px;border:1px solid #dee2e6;" />
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Description</label>
+                            <textarea th:field="*{description}" class="form-control" rows="4"
+                                placeholder="Product description…"></textarea>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-floppy-disk me-1"></i>Save
+                            </button>
+                            <a th:href="@{/admin/products}" class="btn btn-outline-secondary">
+                                <i class="fa-solid fa-xmark me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div th:replace="~{fragments/admin-layout :: adminScripts}"></div>
+</body>
+
+</html>

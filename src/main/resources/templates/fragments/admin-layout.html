@@ -27,19 +27,25 @@
             <li class="nav-item">
                 <a th:href="@{/admin/users}" th:classappend="${activePage == 'users'} ? ' active'"
                     class="nav-link text-white-50">
-                    <i class="fa-solid fa-users me-2"></i>Người dùng
+                    <i class="fa-solid fa-users me-2"></i>Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/categories}" th:classappend="${activePage == 'categories'} ? ' active'"
+                    class="nav-link text-white-50">
+                    <i class="fa-solid fa-tags me-2"></i>Categories
                 </a>
             </li>
             <li class="nav-item">
                 <a th:href="@{/admin/products}" th:classappend="${activePage == 'products'} ? ' active'"
                     class="nav-link text-white-50">
-                    <i class="fa-solid fa-box me-2"></i>Sản phẩm
+                    <i class="fa-solid fa-box me-2"></i>Products
                 </a>
             </li>
             <li class="nav-item">
                 <a th:href="@{/admin/orders}" th:classappend="${activePage == 'orders'} ? ' active'"
                     class="nav-link text-white-50">
-                    <i class="fa-solid fa-receipt me-2"></i>Đơn hàng
+                    <i class="fa-solid fa-receipt me-2"></i>Orders
                 </a>
             </li>
             <li class="nav-item">
@@ -51,7 +57,7 @@
         </ul>
         <hr class="border-secondary" />
         <a href="/logout" class="nav-link text-danger">
-            <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất
+            <i class="fa-solid fa-right-from-bracket me-2"></i>Logout
         </a>
     </nav>
 

@@ -7,7 +7,7 @@
 
     <div th:replace="~{fragments/admin-layout :: adminLayout('Dashboard', ~{::main})}">
         <main>
-            <h5 class="fw-bold mb-4">Tổng quan hệ thống</h5>
+            <h5 class="fw-bold mb-4">System Overview</h5>
 
             <div th:replace="~{fragments/admin-layout :: alerts}"></div>
 
@@ -21,7 +21,7 @@
                                 <i class="fa-solid fa-users fa-xl"></i>
                             </div>
                             <div>
-                                <div class="text-muted small">Tổng người dùng</div>
+                                <div class="text-muted small">Total Users</div>
                                 <div class="fs-4 fw-bold" th:text="${totalUsers}">0</div>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                                 <i class="fa-solid fa-receipt fa-xl"></i>
                             </div>
                             <div>
-                                <div class="text-muted small">Tổng đơn hàng</div>
+                                <div class="text-muted small">Total Orders</div>
                                 <div class="fs-4 fw-bold" th:text="${totalOrders}">0</div>
                             </div>
                         </div>
@@ -49,8 +49,22 @@
                                 <i class="fa-solid fa-box fa-xl"></i>
                             </div>
                             <div>
-                                <div class="text-muted small">Tổng sản phẩm</div>
+                                <div class="text-muted small">Total Products</div>
                                 <div class="fs-4 fw-bold" th:text="${totalProducts}">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Total Categories -->
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body d-flex align-items-center gap-3">
+                            <div class="rounded-circle p-3 bg-info bg-opacity-10 text-info">
+                                <i class="fa-solid fa-tags fa-xl"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small">Total Categories</div>
+                                <div class="fs-4 fw-bold" th:text="${totalCategories}">0</div>
                             </div>
                         </div>
                     </div>
@@ -63,7 +77,7 @@
                                 <i class="fa-solid fa-tag fa-xl"></i>
                             </div>
                             <div>
-                                <div class="text-muted small">Tổng coupon</div>
+                                <div class="text-muted small">Total Coupons</div>
                                 <div class="fs-4 fw-bold" th:text="${totalCoupons}">0</div>
                             </div>
                         </div>
@@ -78,7 +92,7 @@
                         <i class="fa-solid fa-sack-dollar fa-xl"></i>
                     </div>
                     <div>
-                        <div class="text-muted small">Doanh thu (đơn hoàn thành)</div>
+                        <div class="text-muted small">Revenue (Completed Orders)</div>
                         <div class="fs-4 fw-bold"
                             th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
                     </div>

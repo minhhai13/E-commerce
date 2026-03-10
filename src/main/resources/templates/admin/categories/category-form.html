@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/admin-layout :: adminHead(${formTitle})}"></head>
+
+<body>
+    <div th:replace="~{fragments/admin-layout :: adminLayout(${formTitle}, ~{::main})}">
+        <main>
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/categories}">Categories</a></li>
+                    <li class="breadcrumb-item active" th:text="${formTitle}"></li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm" style="max-width: 600px;">
+                <div class="card-header bg-white fw-semibold" th:text="${formTitle}">Form</div>
+                <div class="card-body">
+
+                    <div th:replace="~{fragments/admin-layout :: alerts}"></div>
+
+                    <form th:action="@{/admin/categories/save}" method="post" novalidate>
+                        <!-- Hidden ID -->
+                        <input type="hidden" name="categoryId" th:value="${categoryId}" />
+
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" th:value="${name}" class="form-control"
+                                placeholder="e.g. Electronics" required />
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Description</label>
+                            <textarea name="description" th:text="${description}" class="form-control" rows="3"
+                                placeholder="Short description (optional)"></textarea>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-floppy-disk me-1"></i>Save
+                            </button>
+                            <a th:href="@{/admin/categories}" class="btn btn-outline-secondary">
+                                <i class="fa-solid fa-xmark me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div th:replace="~{fragments/admin-layout :: adminScripts}"></div>
+</body>
+
+</html>

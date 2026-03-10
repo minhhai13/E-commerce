@@ -1,9 +1,11 @@
 package com.group2.ecommerce.service.impl;
 
+import com.group2.ecommerce.dto.PasswordRequest;
 import com.group2.ecommerce.dto.ProfileRequest;
 import com.group2.ecommerce.dto.ProfileResponse;
 import com.group2.ecommerce.entity.User;
 import com.group2.ecommerce.entity.UserAddress;
+import com.group2.ecommerce.util.PasswordUtil;
 import com.group2.ecommerce.repository.UserAddressRepository;
 import com.group2.ecommerce.repository.UserRepository;
 import com.group2.ecommerce.service.ProfileService;
@@ -23,7 +25,7 @@ public class ProfileServiceImpl implements ProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        UserAddress address = userAddressRepository.findByUserIdAndIsDefaultTrue(userId)
+        UserAddress address = userAddressRepository.findDefaultAddressByUserId(userId)
                 .orElseGet(() -> userAddressRepository.findByUserId(userId)
                         .stream().findFirst().orElse(null));
 
@@ -41,7 +43,7 @@ public class ProfileServiceImpl implements ProfileService {
         user.setPhone(request.getUserPhone());
         userRepository.save(user);
 
-        UserAddress address = userAddressRepository.findByUserIdAndIsDefaultTrue(userId)
+        UserAddress address = userAddressRepository.findDefaultAddressByUserId(userId)
                 .orElseGet(() -> userAddressRepository.findByUserId(userId)
                         .stream().findFirst().orElse(null));
 
@@ -57,6 +59,24 @@ public class ProfileServiceImpl implements ProfileService {
         userAddressRepository.save(address);
 
         return buildResponse(user, address);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Long userId, PasswordRequest request) {
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new RuntimeException("New passwords do not match");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!PasswordUtil.verifyPassword(request.getCurrentPassword(), user.getPasswordHash())) {
+            throw new RuntimeException("Incorrect current password");
+        }
+
+        user.setPasswordHash(PasswordUtil.hashPassword(request.getNewPassword()));
+        userRepository.save(user);
     }
 
     private ProfileResponse buildResponse(User user, UserAddress address) {

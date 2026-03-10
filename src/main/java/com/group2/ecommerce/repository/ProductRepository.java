@@ -1,0 +1,29 @@
+package com.group2.ecommerce.repository;
+
+import com.group2.ecommerce.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    // Fetch all active products with pagination and sorting
+    Page<Product> findAllByIsActiveTrue(Pageable pageable);
+
+    // Fetch active products by specific category with pagination
+    Page<Product> findByCategoryIdAndIsActiveTrue(Long categoryId, Pageable pageable);
+
+    // Filter by category tree (category or any subcategory) + Keyword + Pagination
+    @Query("SELECT p FROM Product p LEFT JOIN p.category c " +
+            "WHERE p.isActive = true " +
+            "AND (:categoryId IS NULL OR c.id = :categoryId OR c.parent.id = :categoryId) " +
+            "AND (:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    Page<Product> findByCategoryTreeAndKeyword(
+            @Param("categoryId") Long categoryId,
+            @Param("keyword") String keyword,
+            Pageable pageable);
+}

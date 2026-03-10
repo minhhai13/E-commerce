@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/admin-layout :: adminHead(${formTitle})}"></head>
+
+<body>
+<div th:replace="~{fragments/admin-layout :: adminLayout(${formTitle}, ~{::main})}">
+    <main>
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/admin/users}">Người dùng</a></li>
+                <li class="breadcrumb-item active" th:text="${formTitle}"></li>
+            </ol>
+        </nav>
+
+        <div class="card border-0 shadow-sm" style="max-width: 600px;">
+            <div class="card-header bg-white fw-semibold" th:text="${formTitle}">Form</div>
+            <div class="card-body">
+
+                <div th:replace="~{fragments/admin-layout :: alerts}"></div>
+
+                <form th:action="@{/admin/users/save}" th:object="${userRequest}" method="post" novalidate>
+
+                    <!-- Hidden ID: null = create, filled = update -->
+                    <input type="hidden" name="userId" th:value="${userId}"/>
+
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Họ tên <span class="text-danger">*</span></label>
+                        <input type="text" th:field="*{fullName}"
+                               th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'" class="form-control"
+                               placeholder="Nguyễn Văn A"/>
+                        <div class="invalid-feedback" th:errors="*{fullName}"></div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                        <input type="email" th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" class="form-control"
+                               placeholder="user@example.com"/>
+                        <div class="invalid-feedback" th:errors="*{email}"></div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Số điện thoại</label>
+                        <input type="tel" th:field="*{phone}" class="form-control" placeholder="0901234567"/>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Mật khẩu
+                            <span th:if="${userId == null}" class="text-danger">*</span>
+                            <span th:unless="${userId == null}" class="text-muted fw-normal small">(để trống = giữ
+                                    nguyên)</span>
+                        </label>
+                        <input type="password" th:field="*{password}"
+                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'" class="form-control"
+                               placeholder="••••••••" autocomplete="new-password"/>
+                        <div class="invalid-feedback" th:errors="*{password}"></div>
+                    </div>
+
+                    <!-- Role -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Vai trò <span class="text-danger">*</span></label>
+                        <select th:field="*{role}" th:classappend="${#fields.hasErrors('role')} ? 'is-invalid'"
+                                class="form-select">
+                            <option value="">-- Chọn vai trò --</option>
+                            <option th:each="r : ${roles}" th:value="${r}" th:text="${r.name()}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{role}"></div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+                        </button>
+                        <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
+                            <i class="fa-solid fa-xmark me-1"></i>Huỷ
+                        </a>
+                    </div>
+
+                </form>
+            </div><!-- /card-body -->
+        </div><!-- /card -->
+    </main>
+</div>
+
+<div th:replace="~{fragments/admin-layout :: adminScripts}"></div>
+</body>
+
+</html>

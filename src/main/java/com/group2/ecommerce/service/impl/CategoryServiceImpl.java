@@ -43,10 +43,29 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void save(Long id, String name, String description) {
+    public void save(Long id, String name, String description, Long parentId) {
         name = name == null ? "" : name.trim();
         if (name.isBlank()) {
             throw new IllegalArgumentException("Category name is required.");
+        }
+
+        Category parent = null;
+        if (parentId != null) {
+            if (id != null && id.equals(parentId)) {
+                throw new IllegalArgumentException("A category cannot be its own parent.");
+            }
+            parent = findById(parentId);
+
+            if (id != null) {
+                // Check for circular reference
+                Category currentParent = parent.getParent();
+                while (currentParent != null) {
+                    if (currentParent.getId().equals(id)) {
+                        throw new IllegalArgumentException("Cannot set a descendant category as parent (circular reference).");
+                    }
+                    currentParent = currentParent.getParent();
+                }
+            }
         }
 
         if (id == null) {
@@ -57,6 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = Category.builder()
                     .name(name)
                     .description(description)
+                    .parent(parent)
                     .isActive(true)
                     .build();
             categoryRepository.save(category);
@@ -68,6 +88,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = findById(id);
             category.setName(name);
             category.setDescription(description);
+            category.setParent(parent);
             categoryRepository.save(category);
         }
     }
@@ -78,5 +99,27 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = findById(id);
         category.setActive(!category.isActive());
         categoryRepository.save(category);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getCategoryAndDescendantIds(Long categoryId) {
+        if (categoryId == null) return List.of();
+        
+        List<Long> ids = new java.util.ArrayList<>();
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category != null) {
+            collectIds(category, ids);
+        }
+        return ids;
+    }
+
+    private void collectIds(Category category, List<Long> ids) {
+        ids.add(category.getId());
+        if (category.getChildren() != null) {
+            for (Category child : category.getChildren()) {
+                collectIds(child, ids);
+            }
+        }
     }
 }

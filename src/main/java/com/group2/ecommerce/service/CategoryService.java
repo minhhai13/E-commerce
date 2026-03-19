@@ -16,7 +16,10 @@ public interface CategoryService {
     Category findById(Long id);
 
     /** Create (id == null) or update (id != null). */
-    void save(Long id, String name, String description);
+    void save(Long id, String name, String description, Long parentId);
 
     void toggleStatus(Long id);
+
+    /** Computes a list of the given category id plus all its descendant category ids. */
+    List<Long> getCategoryAndDescendantIds(Long categoryId);
 }

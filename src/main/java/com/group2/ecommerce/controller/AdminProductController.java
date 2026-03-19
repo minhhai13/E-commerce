@@ -1,6 +1,7 @@
 package com.group2.ecommerce.controller;
 
 import com.group2.ecommerce.dto.product.ProductRequest;
+import com.group2.ecommerce.dto.product.ProductResponse;
 import com.group2.ecommerce.entity.Category;
 import com.group2.ecommerce.entity.Product;
 import com.group2.ecommerce.service.CategoryService;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -31,7 +33,7 @@ public class AdminProductController {
                                @RequestParam(defaultValue = "0") int page,
                                Model model) {
         q = q.trim();
-        Page<Product> productsPage = productService.getProducts(q.isEmpty() ? null : q, categoryId, page);
+        Page<ProductResponse> productsPage = productService.getProducts(q.isEmpty() ? null : q, categoryId, page);
         List<Category> categories = categoryService.findAll();
         model.addAttribute("productsPage", productsPage);
         model.addAttribute("categories", categories);
@@ -47,14 +49,14 @@ public class AdminProductController {
     public String showForm(@RequestParam(required = false) Long id, Model model) {
         ProductRequest request = new ProductRequest();
         if (id != null) {
-            Product product = productService.findById(id);
+            ProductResponse product = productService.findById(id);
             request.setName(product.getName());
             request.setDescription(product.getDescription());
             request.setPrice(product.getPrice());
             request.setStockQuantity(product.getStockQuantity());
             request.setImageName(product.getImageName());
-            if (product.getCategory() != null) {
-                request.setCategoryId(product.getCategory().getId());
+            if (product.getCategoryId() != null) {
+                request.setCategoryId(product.getCategoryId());
             }
         }
         List<Category> categories = categoryService.findAll();
@@ -88,6 +90,14 @@ public class AdminProductController {
         } catch (IllegalArgumentException e) {
             List<Category> categories = categoryService.findAll();
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("productId", productId);
+            model.addAttribute("categories", categories);
+            model.addAttribute("activePage", "products");
+            model.addAttribute("formTitle", productId == null ? "Add Product" : "Edit Product #" + productId);
+            return "admin/products/product-form";
+        } catch (IOException e) {
+            List<Category> categories = categoryService.findAll();
+            model.addAttribute("error", "An unexpected error occurred: " + e.getMessage());
             model.addAttribute("productId", productId);
             model.addAttribute("categories", categories);
             model.addAttribute("activePage", "products");

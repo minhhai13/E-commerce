@@ -36,6 +36,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
+                                <th>Parent</th>
                                 <th>Description</th>
                                 <th>Status</th>
                                 <th class="text-center">Actions</th>
@@ -45,6 +46,7 @@
                             <tr th:each="cat : ${categoriesPage.content}">
                                 <td th:text="${cat.id}"></td>
                                 <td th:text="${cat.name}"></td>
+                                <td th:text="${cat.parent != null ? cat.parent.name : '—'}"></td>
                                 <td th:text="${cat.description != null ? cat.description : '—'}"></td>
                                 <td>
                                     <span th:if="${cat.active}" class="badge text-bg-success">Active</span>
@@ -70,7 +72,7 @@
                                 </td>
                             </tr>
                             <tr th:if="${categoriesPage.content.empty}">
-                                <td colspan="5" class="text-center text-muted py-4">No categories found.</td>
+                                <td colspan="6" class="text-center text-muted py-4">No categories found.</td>
                             </tr>
                         </tbody>
                     </table>

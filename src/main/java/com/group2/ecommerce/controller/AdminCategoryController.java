@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin/categories")
 @RequiredArgsConstructor
@@ -35,12 +37,19 @@ public class AdminCategoryController {
     public String showForm(@RequestParam(required = false) Long id, Model model) {
         String name = "";
         String description = "";
+        Long parentId = null;
         if (id != null) {
             Category category = categoryService.findById(id);
             name = category.getName();
             description = category.getDescription() != null ? category.getDescription() : "";
+            if (category.getParent() != null) {
+                parentId = category.getParent().getId();
+            }
         }
+        List<Category> categories = categoryService.findAll();
+        model.addAttribute("categories", categories);
         model.addAttribute("categoryId", id);
+        model.addAttribute("parentId", parentId);
         model.addAttribute("name", name);
         model.addAttribute("description", description);
         model.addAttribute("activePage", "categories");
@@ -53,15 +62,19 @@ public class AdminCategoryController {
     public String save(@RequestParam(required = false) Long categoryId,
                        @RequestParam String name,
                        @RequestParam(required = false) String description,
+                       @RequestParam(required = false) Long parentId,
                        Model model,
                        RedirectAttributes ra) {
         try {
-            categoryService.save(categoryId, name, description);
+            categoryService.save(categoryId, name, description, parentId);
             ra.addFlashAttribute("success",
                     categoryId == null ? "Category created successfully." : "Category updated successfully.");
         } catch (IllegalArgumentException e) {
+            List<Category> categories = categoryService.findAll();
+            model.addAttribute("categories", categories);
             model.addAttribute("error", e.getMessage());
             model.addAttribute("categoryId", categoryId);
+            model.addAttribute("parentId", parentId);
             model.addAttribute("name", name);
             model.addAttribute("description", description);
             model.addAttribute("activePage", "categories");

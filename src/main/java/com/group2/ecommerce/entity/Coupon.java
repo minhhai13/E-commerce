@@ -1,14 +1,7 @@
 package com.group2.ecommerce.entity;
 
 import com.group2.ecommerce.entity.enums.DiscountType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +10,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "coupons")
@@ -57,4 +51,7 @@ public class Coupon {
     @Column(name = "is_active", nullable = false)
     @Builder.Default
     private boolean isActive = true;
+
+    @OneToMany(mappedBy = "coupon")
+    private List<Order> orders;
 }

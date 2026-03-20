@@ -1,9 +1,7 @@
 package com.group2.ecommerce.controller;
 
 import com.group2.ecommerce.entity.Category;
-import com.group2.ecommerce.dto.ProfileResponse;
 import com.group2.ecommerce.repository.CategoryRepository;
-import com.group2.ecommerce.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,19 +17,9 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryRepository categoryRepository;
-    private final ProfileService profileService;
-
-    private static final Long MOCK_USER_ID = 1L;
 
     @GetMapping
     public String showCategoriesPage(Model model) {
-        try {
-            // Profile mock info for layout
-            ProfileResponse profile = profileService.getProfile(MOCK_USER_ID);
-            model.addAttribute("profileInfo", profile);
-        } catch (Exception e) {
-            // ignore
-        }
 
         // Fetch root categories (parent is null) to show on the categories landing page
         List<Category> rootCategories = categoryRepository.findActiveRootCategories();

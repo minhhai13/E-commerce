@@ -26,10 +26,13 @@ public class ProfileController {
     private final ProfileService profileService;
     private final OrderHistoryService orderHistoryService;
     private final AddressService addressService;
+    private final jakarta.servlet.http.HttpSession session;
 
-    // Hardcoded for demonstration. In production, use:
-    // SecurityContextHolder.getContext().getAuthentication()
-    private static final Long MOCK_USER_ID = 1L;
+    private Long getCurrentUserId() {
+        com.group2.ecommerce.entity.User user = (com.group2.ecommerce.entity.User) session.getAttribute("loggedInUser");
+        if (user != null) return user.getId();
+        throw new IllegalStateException("User not logged in");
+    }
 
     // ─── GET /profile ─── Show profile tab
     @GetMapping
@@ -47,12 +50,12 @@ public class ProfileController {
     @GetMapping("/orders/{id}")
     public String showOrderDetails(@PathVariable("id") Long id, Model model) {
         try {
-            OrderHistoryResponse orderDetails = orderHistoryService.getOrderDetails(id, MOCK_USER_ID);
+            OrderHistoryResponse orderDetails = orderHistoryService.getOrderDetails(id, getCurrentUserId());
             model.addAttribute("orderInfo", orderDetails);
             model.addAttribute("activeTab", "orders");
 
             // Add profile info so the sidebar can render correctly
-            ProfileResponse profile = profileService.getProfile(MOCK_USER_ID);
+            ProfileResponse profile = profileService.getProfile(getCurrentUserId());
             model.addAttribute("profileInfo", profile);
 
             return "order-detail";
@@ -79,7 +82,7 @@ public class ProfileController {
     public String updateProfile(@ModelAttribute("profileForm") ProfileRequest request,
             RedirectAttributes redirectAttributes) {
         try {
-            profileService.updateProfile(MOCK_USER_ID, request);
+            profileService.updateProfile(getCurrentUserId(), request);
             redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
             redirectAttributes.addFlashAttribute("activeTab", "profile");
         } catch (Exception e) {
@@ -94,7 +97,7 @@ public class ProfileController {
     public String addAddress(@ModelAttribute("newAddress") AddressRequest request,
             RedirectAttributes redirectAttributes) {
         try {
-            addressService.addAddress(MOCK_USER_ID, request);
+            addressService.addAddress(getCurrentUserId(), request);
             redirectAttributes.addFlashAttribute("successMessage", "Address added successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
@@ -109,7 +112,7 @@ public class ProfileController {
             @ModelAttribute AddressRequest request,
             RedirectAttributes redirectAttributes) {
         try {
-            addressService.updateAddress(MOCK_USER_ID, id, request);
+            addressService.updateAddress(getCurrentUserId(), id, request);
             redirectAttributes.addFlashAttribute("successMessage", "Address updated!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
@@ -123,7 +126,7 @@ public class ProfileController {
     public String deleteAddress(@PathVariable("id") Long id,
             RedirectAttributes redirectAttributes) {
         try {
-            addressService.deleteAddress(MOCK_USER_ID, id);
+            addressService.deleteAddress(getCurrentUserId(), id);
             redirectAttributes.addFlashAttribute("successMessage", "Address deleted!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
@@ -137,7 +140,7 @@ public class ProfileController {
     public String setDefaultAddress(@PathVariable("id") Long id,
             RedirectAttributes redirectAttributes) {
         try {
-            addressService.setDefaultAddress(MOCK_USER_ID, id);
+            addressService.setDefaultAddress(getCurrentUserId(), id);
             redirectAttributes.addFlashAttribute("successMessage", "Default address updated!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
@@ -151,7 +154,7 @@ public class ProfileController {
     public String changePassword(@ModelAttribute("passwordForm") PasswordRequest request,
             RedirectAttributes redirectAttributes) {
         try {
-            profileService.changePassword(MOCK_USER_ID, request);
+            profileService.changePassword(getCurrentUserId(), request);
             redirectAttributes.addFlashAttribute("successMessage", "Password changed successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
@@ -163,7 +166,7 @@ public class ProfileController {
     // ─── Helper: build model for all tabs ───
     private String loadModel(Model model, String activeTab) {
         try {
-            ProfileResponse profile = profileService.getProfile(MOCK_USER_ID);
+            ProfileResponse profile = profileService.getProfile(getCurrentUserId());
 
             ProfileRequest profileForm = ProfileRequest.builder()
                     .fullName(profile.getFullName())
@@ -176,8 +179,8 @@ public class ProfileController {
 
             model.addAttribute("profileForm", profileForm);
             model.addAttribute("profileInfo", profile);
-            model.addAttribute("orders", orderHistoryService.getOrdersByUserId(MOCK_USER_ID));
-            model.addAttribute("addresses", addressService.getAddressesByUserId(MOCK_USER_ID));
+            model.addAttribute("orders", orderHistoryService.getOrdersByUserId(getCurrentUserId()));
+            model.addAttribute("addresses", addressService.getAddressesByUserId(getCurrentUserId()));
             model.addAttribute("newAddress", new AddressRequest());
             model.addAttribute("passwordForm", new PasswordRequest());
             model.addAttribute("activeTab", model.containsAttribute("activeTab")

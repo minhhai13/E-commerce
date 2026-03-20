@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account – ShopZone</title>
+    <title >My Account – ShopZone</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -767,7 +767,7 @@
 
     <!-- ═══ TOP NAV ═══ -->
     <nav class="topnav">
-        <a class="logo" href="#"><span>Shop</span>Zone</a>
+        <a class="logo" th:href="@{/}"><span>Shop</span>Zone</a>
         <div>
             <button class="avatar-btn"
                 th:text="${profileInfo != null and profileInfo.fullName != null} ? ${#strings.substring(profileInfo.fullName,0,1)} : 'U'">U</button>
@@ -832,7 +832,7 @@
                     Security
                 </a>
 
-                <a class="nav-item nav-danger" href="#">
+                <a class="nav-item nav-danger" th:href="@{/logout}">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

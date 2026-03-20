@@ -635,6 +635,47 @@
         .empty-state p {
             color: var(--text-muted);
         }
+
+        /* ── USER DROPDOWN ── */
+        .user-dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--surface, #FFFFFF);
+            min-width: 160px;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            z-index: 1000;
+            overflow: hidden;
+            border: 1px solid var(--border, #E2E8F0);
+        }
+        .user-dropdown-container:hover .user-dropdown-menu {
+            display: block;
+        }
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 1.25rem;
+            color: var(--text, #0F172A);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .user-dropdown-item:hover {
+            background-color: #F1F5F9;
+            color: var(--primary, #6366F1);
+        }
+        .user-dropdown-item.danger:hover {
+            background-color: #FEF2F2;
+            color: #EF4444;
+        }
     </style>
 </head>
 
@@ -660,13 +701,25 @@
                 <div class="cart-badge">0</div>
             </button>
 
-            <a th:if="${profileInfo != null}" th:href="@{/profile}" class="user-btn">
-                <div class="avatar"
-                    th:text="${profileInfo.fullName != null} ? ${#strings.substring(profileInfo.fullName,0,1)} : 'U'">U
+            <div th:if="${profileInfo != null}" class="user-dropdown-container">
+                <a href="#" class="user-btn">
+                    <div class="avatar"
+                        th:text="${profileInfo.fullName != null} ? ${#strings.substring(profileInfo.fullName,0,1)} : 'U'">U
+                    </div>
+                    <div class="user-name" th:text="${profileInfo.fullName}">User</div>
+                </a>
+                <div class="user-dropdown-menu">
+                    <a th:href="@{/profile}" class="user-dropdown-item">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px; height:16px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                        My Profile
+                    </a>
+                    <a th:href="@{/logout}" class="user-dropdown-item danger">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px; height:16px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                        Logout
+                    </a>
                 </div>
-                <div class="user-name" th:text="${profileInfo.fullName}">User</div>
-            </a>
-            <a th:unless="${profileInfo != null}" th:href="@{/profile}" class="user-btn" style="padding: 0.5rem 1rem;">
+            </div>
+            <a th:unless="${profileInfo != null}" th:href="@{/login}" class="user-btn" style="padding: 0.5rem 1rem;">
                 <span class="user-name" style="padding: 0;">Sign In</span>
             </a>
         </div>

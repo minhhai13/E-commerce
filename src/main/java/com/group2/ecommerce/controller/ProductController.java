@@ -1,9 +1,7 @@
 package com.group2.ecommerce.controller;
 
-import com.group2.ecommerce.dto.ProfileResponse;
 import com.group2.ecommerce.entity.Product;
 import com.group2.ecommerce.repository.ProductRepository;
-import com.group2.ecommerce.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,21 +19,9 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductRepository productRepository;
-    private final ProfileService profileService;
-
-    // Hardcoded for demonstration. In production, use ContextHolder
-    private static final Long MOCK_USER_ID = 1L;
 
     @GetMapping("/{id}")
     public String showProductDetail(@PathVariable("id") Long id, Model model) {
-
-        try {
-            // Include profile mock info for the shared navigation header
-            ProfileResponse profile = profileService.getProfile(MOCK_USER_ID);
-            model.addAttribute("profileInfo", profile);
-        } catch (Exception e) {
-            // Ignored if user not found
-        }
 
         Optional<Product> productOpt = productRepository.findById(id);
 

@@ -131,3 +131,4 @@ CREATE TABLE order_items (
     CONSTRAINT FK_order_items_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
 );
 GO
+delete from users WHERE id in (20002,20003,20004)

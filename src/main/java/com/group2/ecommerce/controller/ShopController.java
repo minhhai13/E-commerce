@@ -34,9 +34,27 @@ public class ShopController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             Model model) {
 
-        // Fetch active categories for the sidebar
-        List<Category> allCategories = categoryRepository.findAllByIsActiveTrue();
-        model.addAttribute("categories", allCategories);
+        // Fetch the selected category and its hierarchy
+        Category selectedCategory = null;
+        if (categoryId != null) {
+            selectedCategory = categoryRepository.findById(categoryId).orElse(null);
+        }
+        model.addAttribute("selectedCategory", selectedCategory);
+
+        // Fetch categories for sidebar
+        List<Category> categories;
+        if (selectedCategory != null) {
+            // If selected category is a parent, show its children
+            // If it's a child, show its siblings and keep reference to parent
+            if (selectedCategory.getParent() == null) {
+                categories = selectedCategory.getChildren();
+            } else {
+                categories = selectedCategory.getParent().getChildren();
+            }
+        } else {
+            categories = categoryRepository.findActiveRootCategories();
+        }
+        model.addAttribute("categories", categories);
 
         // Setup Sorting
         Sort sortOrder = Sort.by(Sort.Direction.DESC, "id"); // Default "newest"

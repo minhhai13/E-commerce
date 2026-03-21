@@ -6,6 +6,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
  * Session-based security filter for role-based access control.
  * Checks HttpSession for "loggedInUser" attribute.
  */
+@Component
 public class SecurityFilter implements Filter {
 
     @Override
@@ -28,9 +30,17 @@ public class SecurityFilter implements Filter {
 
         // Allow public resources
         if (relativePath.startsWith("/static/")
+                || relativePath.equals("/")
+                || relativePath.equals("/home")
                 || relativePath.equals("/login")
                 || relativePath.equals("/logout")
-                || relativePath.equals("/403")) {
+                || relativePath.equals("/register")
+                || relativePath.equals("/403")
+                || relativePath.equals("/shop")
+                || relativePath.equals("/categories")
+                || relativePath.startsWith("/products/")
+                || relativePath.startsWith("/cart")
+                || relativePath.startsWith("/images/")) {
             chain.doFilter(request, response);
             return;
         }

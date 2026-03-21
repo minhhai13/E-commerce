@@ -26,4 +26,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("categoryId") Long categoryId,
             @Param("keyword") String keyword,
             Pageable pageable);
+    @Query("SELECT p FROM Product p WHERE " +
+            "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))")
+    Page<Product> findByNameFilter(@Param("name") String name, Pageable pageable);
+
+    @Query("SELECT p FROM Product p WHERE " +
+            "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
+            "(p.category.id IN :categoryIds)")
+    Page<Product> findByNameFilterAndCategoryIds(@Param("name") String name,
+                                                 @Param("categoryIds") java.util.List<Long> categoryIds,
+                                                 Pageable pageable);
 }
+
+
+
+
+

@@ -34,6 +34,69 @@
             --warning-bg: #FFFBEB;
             --radius: 14px;
             --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* ── TOAST NOTIFICATIONS ── */
+        .toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            pointer-events: none;
+        }
+
+        .toast {
+            pointer-events: auto;
+            min-width: 300px;
+            background: var(--surface);
+            color: var(--text);
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-left: 4px solid var(--primary);
+            transform: translateX(120%);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-success { border-left-color: var(--success); }
+        .toast-error { border-left-color: var(--error); }
+        .toast-warning { border-left-color: var(--warning); }
+
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon { color: var(--success); }
+        .toast-error .toast-icon { color: var(--error); }
+        .toast-warning .toast-icon { color: var(--warning); }
+
+        .error-text {
+            color: var(--error);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            font-weight: 500;
+            display: block;
+        }
+
+        .iw.has-error input,
+        .iw.has-error textarea {
+            border-color: var(--error);
+            background: var(--error-bg);
         }
 
         body {
@@ -81,6 +144,207 @@
             font-size: 0.9rem;
             border: none;
             cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* ── CATEGORY DROPDOWN ── */
+        .nav-item-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface);
+            min-width: 220px;
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 0.75rem 0;
+            z-index: 1100;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .nav-item-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .dropdown-item svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.5;
+        }
+
+        .cart-btn {
+            position: relative;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .cart-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary-light);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        .user-btn {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.5rem 0.4rem 0.4rem;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .user-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #818CF8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            padding-right: 0.5rem;
+        }
+
+        .user-dropdown-container {
+            position: relative;
+        }
+
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--surface);
+            min-width: 160px;
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+            z-index: 1000;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .user-dropdown-container:hover .user-dropdown-menu {
+            display: block;
+        }
+
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 1.25rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .user-dropdown-item:hover {
+            background-color: var(--bg);
+            color: var(--primary);
+        }
+
+        .user-dropdown-item.danger:hover {
+            background-color: var(--error-bg);
+            color: var(--error);
         }
 
         /* ── LAYOUT ── */
@@ -150,6 +414,67 @@
             padding: .75rem 1.25rem .3rem;
         }
 
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* ── CATEGORY DROPDOWN ── */
+        .nav-item-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface);
+            min-width: 220px;
+            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 0.75rem 0;
+            z-index: 1100;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .nav-item-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .dropdown-item svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.5;
+        }
         .nav-item {
             display: flex;
             align-items: center;
@@ -765,524 +1090,618 @@
 
 <body>
 
-    <!-- ═══ TOP NAV ═══ -->
-    <nav class="topnav">
-        <a class="logo" th:href="@{/}"><span>Shop</span>Zone</a>
-        <div>
-            <button class="avatar-btn"
-                th:text="${profileInfo != null and profileInfo.fullName != null} ? ${#strings.substring(profileInfo.fullName,0,1)} : 'U'">U</button>
-        </div>
-    </nav>
+<nav class="topnav">
+    <a class="logo" th:href="@{/}"><span>Shop</span>Zone</a>
 
-    <div class="layout">
-
-        <!-- ═══ SIDEBAR ═══ -->
-        <aside class="sidebar">
-            <div class="sidebar-user">
-                <div class="s-avatar"
-                    th:text="${profileInfo != null and profileInfo.fullName != null} ? ${#strings.substring(profileInfo.fullName,0,1)} : 'U'">
-                    U</div>
-                <div class="s-name" th:text="${profileInfo != null} ? ${profileInfo.fullName} : 'User'">User</div>
-                <div class="s-email" th:text="${profileInfo != null} ? ${profileInfo.email} : ''">user@email.com</div>
+    <div class="nav-links">
+        <a th:href="@{/}" class="nav-link">Home</a>
+        <a th:href="@{/shop}" class="nav-link">Shop</a>
+        <div class="nav-item-dropdown">
+            <a th:href="@{/categories}" class="nav-link">Categories</a>
+            <div class="dropdown-menu">
+                <a th:each="cat : ${allParentCategories}"
+                   th:href="@{/shop(category=${cat.id})}"
+                   class="dropdown-item">
+                    <span th:text="${cat.name}">Category</span>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
             </div>
+        </div>
+        <a th:href="@{/#about}" class="nav-link">About Us</a>
+    </div>
 
-            <nav class="sidebar-nav">
-                <div class="nav-group-label">Account</div>
+    <div class="nav-actions">
+        <a th:href="@{/cart}" class="cart-btn">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <div class="cart-badge" th:if="${cartItemCount != null and cartItemCount > 0}" th:text="${cartItemCount}">0</div>
+        </a>
 
-                <a class="nav-item" th:href="@{/profile}" th:classappend="${activeTab == 'profile'} ? ' active' : ''">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+        <div th:if="${profileInfo != null}" class="user-dropdown-container">
+            <a href="#" class="user-btn">
+                <div class="avatar"
+                     th:text="${profileInfo.fullName != null} ? ${#strings.substring(profileInfo.fullName,0,1)} : 'U'">U
+                </div>
+                <div class="user-name" th:text="${profileInfo.fullName}">User</div>
+            </a>
+            <div class="user-dropdown-menu">
+                <a th:href="@{/profile}" class="user-dropdown-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px; height:16px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                     My Profile
                 </a>
-
-                <a class="nav-item" th:href="@{/profile/orders}"
-                    th:classappend="${activeTab == 'orders'} ? ' active' : ''">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    Order History
-                    <span class="badge-count" th:if="${orders != null and !orders.isEmpty()}"
-                        th:text="${#lists.size(orders)}">0</span>
+                <a th:href="@{/logout}" class="user-dropdown-item danger">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px; height:16px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    Logout
                 </a>
-
-                <a class="nav-item" th:href="@{/profile/addresses}"
-                    th:classappend="${activeTab == 'address'} ? ' active' : ''">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Saved Addresses
-                    <span class="badge-count" th:if="${addresses != null and !addresses.isEmpty()}"
-                        th:text="${#lists.size(addresses)}">0</span>
-                </a>
-
-                <div class="nav-group-label" style="margin-top:.35rem">Settings</div>
-
-                <a class="nav-item" th:href="@{/profile/security}"
-                    th:classappend="${activeTab == 'security'} ? ' active' : ''">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                    Security
-                </a>
-
-                <a class="nav-item nav-danger" th:href="@{/logout}">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Sign Out
-                </a>
-            </nav>
-        </aside>
-
-        <!-- ═══ MAIN CONTENT ═══ -->
-        <main class="main">
-
-            <!-- Alert Flash -->
-            <div th:if="${successMessage}" class="alert alert-success" style="margin:0 0 1rem;">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span th:text="${successMessage}"></span>
             </div>
-            <div th:if="${errorMessage}" class="alert alert-error" style="margin:0 0 1rem;">
+        </div>
+        <a th:unless="${profileInfo != null}" th:href="@{/login}" class="user-btn" style="padding: 0.5rem 1rem;">
+            <span class="user-name" style="padding: 0;">Sign In</span>
+        </a>
+    </div>
+</nav>
+
+<div class="layout">
+
+    <!-- ═══ SIDEBAR ═══ -->
+    <aside class="sidebar">
+        <div class="sidebar-user">
+            <div class="s-avatar"
+                 th:text="${profileInfo != null and profileInfo.fullName != null} ? ${#strings.substring(profileInfo.fullName,0,1)} : 'U'">
+                U</div>
+            <div class="s-name" th:text="${profileInfo != null} ? ${profileInfo.fullName} : 'User'">User</div>
+            <div class="s-email" th:text="${profileInfo != null} ? ${profileInfo.email} : ''">user@email.com</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-group-label">Account</div>
+
+            <a class="nav-item" th:href="@{/profile}" th:classappend="${activeTab == 'profile'} ? ' active' : ''">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-                <span th:text="${errorMessage}"></span>
-            </div>
+                My Profile
+            </a>
 
-            <!-- ════ MY PROFILE PANEL ════ -->
-            <div class="card panel" th:classappend="${activeTab == 'profile'} ? ' active' : ''">
-                <div class="card-header">
-                    <div class="icon-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg></div>
-                    <div>
-                        <div class="card-title">My Profile</div>
-                        <div class="card-sub">Manage your personal information</div>
-                    </div>
+            <a class="nav-item" th:href="@{/profile/orders}"
+               th:classappend="${activeTab == 'orders'} ? ' active' : ''">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Order History
+                <span class="badge-count" th:if="${orders != null and !orders.isEmpty()}"
+                      th:text="${#lists.size(orders)}">0</span>
+            </a>
+
+            <a class="nav-item" th:href="@{/profile/addresses}"
+               th:classappend="${activeTab == 'address'} ? ' active' : ''">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Saved Addresses
+                <span class="badge-count" th:if="${addresses != null and !addresses.isEmpty()}"
+                      th:text="${#lists.size(addresses)}">0</span>
+            </a>
+
+            <div class="nav-group-label" style="margin-top:.35rem">Settings</div>
+
+            <a class="nav-item" th:href="@{/profile/security}"
+               th:classappend="${activeTab == 'security'} ? ' active' : ''">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Security
+            </a>
+
+            <a class="nav-item nav-danger" th:href="@{/logout}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Sign Out
+            </a>
+        </nav>
+    </aside>
+
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <main class="main">
+
+        <!-- Alerts are now handled by toasts at the bottom of the page -->
+
+        <!-- ════ MY PROFILE PANEL ════ -->
+        <div class="card panel" th:classappend="${activeTab == 'profile'} ? ' active' : ''">
+            <div class="card-header">
+                <div class="icon-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg></div>
+                <div>
+                    <div class="card-title">My Profile</div>
+                    <div class="card-sub">Manage your personal information</div>
                 </div>
-                <form th:action="@{/profile}" th:object="${profileForm}" method="post" class="form-body">
-                    <div class="section-label">Personal Information</div>
-                    <div class="form-grid">
-                        <div class="fg">
-                            <label for="fullName">Full Name</label>
-                            <div class="iw">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                                <input type="text" id="fullName" th:field="*{fullName}" required />
-                            </div>
-                        </div>
-                        <div class="fg">
-                            <label for="email">Email</label>
-                            <div class="iw">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                </svg>
-                                <input type="email" id="email" th:field="*{email}" required />
-                            </div>
-                        </div>
-                        <div class="fg full">
-                            <label for="userPhone">Phone</label>
-                            <div class="iw">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                </svg>
-                                <input type="tel" id="userPhone" th:field="*{userPhone}" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr class="div">
-                    <div class="section-label">Default Shipping Address</div>
-                    <div class="form-grid">
-                        <div class="fg">
-                            <label for="recipientName">Recipient Name</label>
-                            <div class="iw">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                                <input type="text" id="recipientName" th:field="*{recipientName}" />
-                            </div>
-                        </div>
-                        <div class="fg">
-                            <label for="addressPhone">Contact Phone</label>
-                            <div class="iw">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                </svg>
-                                <input type="tel" id="addressPhone" th:field="*{addressPhone}" />
-                            </div>
-                        </div>
-                        <div class="fg full">
-                            <label for="addressDetail">Detailed Address</label>
-                            <div class="iw">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                    style="top:14px;position:absolute">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                                <textarea id="addressDetail" th:field="*{addressDetail}"
-                                    style="padding-left:2.2rem"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-primary" style="margin-top:1.25rem">Save Changes</button>
-                </form>
             </div>
-
-            <!-- ════ ORDER HISTORY PANEL ════ -->
-            <div class="card panel" th:classappend="${activeTab == 'orders'} ? ' active' : ''">
-                <div class="card-header">
-                    <div class="icon-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg></div>
-                    <div>
-                        <div class="card-title">Order History</div>
-                        <div class="card-sub">Track and review your past purchases</div>
+            <form th:action="@{/profile}" th:object="${profileForm}" method="post" class="form-body">
+                <div class="section-label">Personal Information</div>
+                <div class="form-grid">
+                    <div class="fg">
+                        <label for="fullName">Full Name</label>
+                        <div class="iw">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <input type="text" id="fullName" th:field="*{fullName}" />
+                        </div>
+                        <span class="error-text" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+                    </div>
+                    <div class="fg">
+                        <label for="email">Email</label>
+                        <div class="iw" th:classappend="${#fields.hasErrors('email')} ? 'has-error' : ''">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <input type="email" id="email" th:field="*{email}" />
+                        </div>
+                        <span class="error-text" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                    </div>
+                    <div class="fg full">
+                        <label for="userPhone">Phone</label>
+                        <div class="iw" th:classappend="${#fields.hasErrors('userPhone')} ? 'has-error' : ''">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            <input type="tel" id="userPhone" th:field="*{userPhone}" />
+                        </div>
+                        <span class="error-text" th:if="${#fields.hasErrors('userPhone')}" th:errors="*{userPhone}"></span>
                     </div>
                 </div>
 
-                <div class="orders-body">
-                    <!-- Empty state -->
-                    <div class="empty-state" th:if="${orders == null or orders.isEmpty()}">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        <p>You haven't placed any orders yet.</p>
+                <hr class="div">
+                <div class="section-label">Default Shipping Address</div>
+                <div class="form-grid">
+                    <div class="fg">
+                        <label for="recipientName">Recipient Name</label>
+                        <div class="iw">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <input type="text" id="recipientName" th:field="*{recipientName}" />
+                        </div>
+                        <span class="error-text" th:if="${#fields.hasErrors('recipientName')}" th:errors="*{recipientName}"></span>
+                    </div>
+                    <div class="fg">
+                        <label for="addressPhone">Contact Phone</label>
+                        <div class="iw" th:classappend="${#fields.hasErrors('addressPhone')} ? 'has-error' : ''">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            <input type="tel" id="addressPhone" th:field="*{addressPhone}" />
+                        </div>
+                        <span class="error-text" th:if="${#fields.hasErrors('addressPhone')}" th:errors="*{addressPhone}"></span>
+                    </div>
+                    <div class="fg full">
+                        <label for="addressDetail">Detailed Address</label>
+                        <div class="iw" th:classappend="${#fields.hasErrors('addressDetail')} ? 'has-error' : ''">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                 style="top:14px;position:absolute">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <textarea id="addressDetail" th:field="*{addressDetail}"
+                                      style="padding-left:2.2rem"></textarea>
+                        </div>
+                        <span class="error-text" th:if="${#fields.hasErrors('addressDetail')}" th:errors="*{addressDetail}"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary" style="margin-top:1.25rem">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- ════ ORDER HISTORY PANEL ════ -->
+        <div class="card panel" th:classappend="${activeTab == 'orders'} ? ' active' : ''">
+            <div class="card-header">
+                <div class="icon-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg></div>
+                <div>
+                    <div class="card-title">Order History</div>
+                    <div class="card-sub">Track and review your past purchases</div>
+                </div>
+            </div>
+
+            <div class="orders-body">
+                <!-- Empty state -->
+                <div class="empty-state" th:if="${orders == null or orders.isEmpty()}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <p>You haven't placed any orders yet.</p>
+                </div>
+
+                <!-- Order cards -->
+                <div th:each="order : ${orders}" class="order-card">
+                    <div class="order-hd">
+                        <div class="order-id" th:text="'#ORD-' + ${order.id}"></div>
+                        <span class="badge" th:classappend="${order.statusCssClass}"
+                              th:text="${order.statusLabel}"></span>
+                        <div class="order-date"
+                             th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy · HH:mm')}"></div>
                     </div>
 
-                    <!-- Order cards -->
-                    <div th:each="order : ${orders}" class="order-card">
-                        <div class="order-hd">
-                            <div class="order-id" th:text="'#ORD-' + ${order.id}"></div>
-                            <span class="badge" th:classappend="${order.statusCssClass}"
-                                th:text="${order.statusLabel}"></span>
-                            <div class="order-date"
-                                th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy · HH:mm')}"></div>
-                        </div>
-
-                        <div class="order-bd" style="padding: .9rem 1.2rem;">
-                            <div class="order-items-list" style="display: flex; flex-direction: column; gap: .5rem;">
-                                <div th:each="item : ${order.items}" class="oi"
-                                    style="display: flex; align-items: center; gap: .8rem;">
-                                    <div class="oi-icon"
-                                        style="width: 32px; height: 32px; border-radius: 6px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--primary);">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                            style="width: 16px; height: 16px;">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
-                                        </svg>
-                                    </div>
-                                    <div
+                    <div class="order-bd" style="padding: .9rem 1.2rem;">
+                        <div class="order-items-list" style="display: flex; flex-direction: column; gap: .5rem;">
+                            <div th:each="item : ${order.items}" class="oi"
+                                 style="display: flex; align-items: center; gap: .8rem;">
+                                <div class="oi-icon"
+                                     style="width: 32px; height: 32px; border-radius: 6px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--primary);">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                         style="width: 16px; height: 16px;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
+                                    </svg>
+                                </div>
+                                <div
                                         style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
-                                        <div class="oi-name" th:text="${item.productName}"
-                                            style="font-size: .86rem; font-weight: 500;"></div>
-                                        <div class="oi-qty" th:text="'x' + ${item.quantity}"
-                                            style="font-size: .8rem; color: var(--text-muted); font-weight: 600;"></div>
-                                    </div>
+                                    <div class="oi-name" th:text="${item.productName}"
+                                         style="font-size: .86rem; font-weight: 500;"></div>
+                                    <div class="oi-qty" th:text="'x' + ${item.quantity}"
+                                         style="font-size: .8rem; color: var(--text-muted); font-weight: 600;"></div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="order-ft">
-                            <div class="order-total">
-                                Total: <span
-                                    th:text="'$' + ${#numbers.formatDecimal(order.totalAmount,1,'COMMA',2,'POINT')}"></span>
-                                <span
+                    <div class="order-ft">
+                        <div class="order-total">
+                            Total: <span
+                                th:text="'$' + ${#numbers.formatDecimal(order.totalAmount,1,'COMMA',2,'POINT')}"></span>
+                            <span
                                     th:if="${order.discountAmount != null and order.discountAmount.compareTo(T(java.math.BigDecimal).ZERO) > 0}"
                                     style="font-size:.78rem;color:var(--success);margin-left:.5rem;"
                                     th:text="'(-$' + ${#numbers.formatDecimal(order.discountAmount,1,'COMMA',2,'POINT')} + ')'"></span>
-                            </div>
-                            <a class="btn-outline btn-sm" th:href="@{/profile/orders/{id}(id=${order.id})}"
-                                style="margin-top: 1rem; width: 100%; display: block; text-align: center; text-decoration: none;">View
-                                Details</a>
                         </div>
+                        <a class="btn-outline btn-sm" th:href="@{/profile/orders/{id}(id=${order.id})}"
+                           style="margin-top: 1rem; width: 100%; display: block; text-align: center; text-decoration: none;">View
+                            Details</a>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- ════ SAVED ADDRESSES PANEL ════ -->
-            <div class="card panel" th:classappend="${activeTab == 'address'} ? ' active' : ''">
-                <div class="card-header">
-                    <div class="icon-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg></div>
-                    <div>
-                        <div class="card-title">Saved Addresses</div>
-                        <div class="card-sub">Manage your shipping addresses</div>
-                    </div>
+        <!-- ════ SAVED ADDRESSES PANEL ════ -->
+        <div class="card panel" th:classappend="${activeTab == 'address'} ? ' active' : ''">
+            <div class="card-header">
+                <div class="icon-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg></div>
+                <div>
+                    <div class="card-title">Saved Addresses</div>
+                    <div class="card-sub">Manage your shipping addresses</div>
                 </div>
+            </div>
 
-                <!-- Address grid -->
-                <div class="addr-grid">
-                    <div th:each="addr : ${addresses}" class="addr-card"
-                        th:classappend="${addr.default} ? ' default' : ''">
-                        <div class="addr-card-header">
-                            <div class="addr-recipient" th:text="${addr.recipientName}"></div>
-                            <span class="badge-default" th:if="${addr.default}">Default</span>
-                        </div>
-                        <div class="addr-phone" th:text="${addr.phone}"></div>
-                        <div class="addr-detail" th:text="${addr.addressDetail}"></div>
-                        <div class="addr-actions">
-                            <!-- Set Default -->
-                            <form th:if="${!addr.default}" th:action="@{/profile/addresses/{id}/default(id=${addr.id})}"
-                                method="post">
-                                <button type="submit" class="btn-outline btn-sm">Set Default</button>
-                            </form>
-                            <!-- Edit -->
-                            <button class="btn-outline btn-sm" th:data-id="${addr.id}"
+            <!-- Address grid -->
+            <div class="addr-grid">
+                <div th:each="addr : ${addresses}" class="addr-card"
+                     th:classappend="${addr.default} ? ' default' : ''">
+                    <div class="addr-card-header">
+                        <div class="addr-recipient" th:text="${addr.recipientName}"></div>
+                        <span class="badge-default" th:if="${addr.default}">Default</span>
+                    </div>
+                    <div class="addr-phone" th:text="${addr.phone}"></div>
+                    <div class="addr-detail" th:text="${addr.addressDetail}"></div>
+                    <div class="addr-actions">
+                        <!-- Set Default -->
+                        <form th:if="${!addr.default}" th:action="@{/profile/addresses/{id}/default(id=${addr.id})}"
+                              method="post">
+                            <button type="submit" class="btn-outline btn-sm">Set Default</button>
+                        </form>
+                        <!-- Edit -->
+                        <button class="btn-outline btn-sm" th:data-id="${addr.id}"
                                 th:data-name="${addr.recipientName}" th:data-phone="${addr.phone}"
                                 th:data-detail="${addr.addressDetail}" onclick="openEditModal(this)">
-                                Edit
-                            </button>
-                            <!-- Delete -->
-                            <form th:action="@{/profile/addresses/{id}/delete(id=${addr.id})}" method="post"
-                                onsubmit="return confirm('Delete this address?')">
-                                <button type="submit" class="btn-danger btn-sm">Delete</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Empty state -->
-                <div class="empty-state" th:if="${addresses == null or addresses.isEmpty()}" style="padding:2.5rem">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <p>No saved addresses yet.</p>
-                </div>
-
-                <!-- Add Address -->
-                <div class="add-addr-section">
-                    <button class="add-addr-toggle" onclick="toggleAddForm()">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Add New Address
-                    </button>
-                    <div class="add-form-box" id="addAddressForm">
-                        <form th:action="@{/profile/addresses}" th:object="${newAddress}" method="post">
-                            <div class="form-grid" style="margin-bottom:1rem">
-                                <div class="fg">
-                                    <label>Recipient Name</label>
-                                    <div class="iw">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
-                                        <input type="text" th:field="*{recipientName}" required />
-                                    </div>
-                                </div>
-                                <div class="fg">
-                                    <label>Phone</label>
-                                    <div class="iw">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                        </svg>
-                                        <input type="tel" th:field="*{phone}" required />
-                                    </div>
-                                </div>
-                                <div class="fg full">
-                                    <label>Detailed Address</label>
-                                    <div class="iw">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                            style="top:14px;position:absolute">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                        <textarea th:field="*{addressDetail}" style="padding-left:2.2rem"
-                                            required></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:.6rem">
-                                <button type="submit" class="btn-primary">Save Address</button>
-                                <button type="button" class="btn-outline" onclick="toggleAddForm()">Cancel</button>
-                            </div>
+                            Edit
+                        </button>
+                        <!-- Delete -->
+                        <form th:action="@{/profile/addresses/{id}/delete(id=${addr.id})}" method="post"
+                              onsubmit="return confirm('Delete this address?')">
+                            <button type="submit" class="btn-danger btn-sm">Delete</button>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <!-- ════ SECURITY PANEL ════ -->
-            <div class="card panel" th:classappend="${activeTab == 'security'} ? ' active' : ''">
-                <div class="card-header">
-                    <div class="icon-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg></div>
-                    <div>
-                        <div class="card-title">Security & Password</div>
-                        <div class="card-sub">Manage your account security settings</div>
-                    </div>
-                </div>
-
-                <form th:action="@{/profile/security}" th:object="${passwordForm}" method="post" class="form-body">
-                    <div class="form-grid">
-                        <div class="fg full">
-                            <label>Current Password</label>
-                            <div class="iw">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4v-3.25l3.243-3.243A6 6 0 1115 9z" />
-                                </svg>
-                                <input type="password" th:field="*{currentPassword}" required />
-                            </div>
-                        </div>
-                        <div class="fg">
-                            <label>New Password</label>
-                            <div class="iw">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                                <input type="password" th:field="*{newPassword}" required minlength="6" />
-                            </div>
-                        </div>
-                        <div class="fg">
-                            <label>Confirm Password</label>
-                            <div class="iw">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
-                                <input type="password" th:field="*{confirmPassword}" required minlength="6" />
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-primary" style="margin-top:1.25rem">Update Password</button>
-                </form>
+            <!-- Empty state -->
+            <div class="empty-state" th:if="${addresses == null or addresses.isEmpty()}" style="padding:2.5rem">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                          d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <p>No saved addresses yet.</p>
             </div>
 
-        </main>
-    </div>
+            <!-- Add Address -->
+            <div class="add-addr-section">
+                <button class="add-addr-toggle" onclick="toggleAddForm()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add New Address
+                </button>
+                <div class="add-form-box" id="addAddressForm">
+                    <form th:action="@{/profile/addresses}" th:object="${newAddress}" method="post">
+                        <div class="form-grid" style="margin-bottom:1rem">
+                            <div class="fg">
+                                <label>Recipient Name</label>
+                                <div class="iw">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <input type="text" th:field="*{recipientName}" />
+                                </div>
+                                <span class="error-text" th:if="${#fields.hasErrors('recipientName')}" th:errors="*{recipientName}"></span>
+                            </div>
+                            <div class="fg">
+                                <label>Phone</label>
+                                <div class="iw" th:classappend="${#fields.hasErrors('phone')} ? 'has-error' : ''">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                    <input type="tel" th:field="*{phone}" />
+                                </div>
+                                <span class="error-text" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+                            </div>
+                            <div class="fg full">
+                                <label>Detailed Address</label>
+                                <div class="iw" th:classappend="${#fields.hasErrors('addressDetail')} ? 'has-error' : ''">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                         style="top:14px;position:absolute">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <textarea th:field="*{addressDetail}" style="padding-left:2.2rem"></textarea>
+                                </div>
+                                <span class="error-text" th:if="${#fields.hasErrors('addressDetail')}" th:errors="*{addressDetail}"></span>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:.6rem">
+                            <button type="submit" class="btn-primary">Save Address</button>
+                            <button type="button" class="btn-outline" onclick="toggleAddForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-    <!-- ═══ EDIT ADDRESS MODAL ═══ -->
-    <div class="modal-backdrop" id="editModal" onclick="closeEditModal(event)">
-        <div class="modal">
-            <div class="modal-title">Edit Address</div>
-            <form id="editForm" method="post" th:action="@{/}">
-                <div class="form-grid" style="margin-bottom:1rem">
-                    <div class="fg">
-                        <label>Recipient Name</label>
-                        <div class="iw">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            <input type="text" id="editRecipientName" name="recipientName" required />
-                        </div>
-                    </div>
-                    <div class="fg">
-                        <label>Phone</label>
-                        <div class="iw">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
-                            <input type="tel" id="editPhone" name="phone" required />
-                        </div>
-                    </div>
+        <!-- ════ SECURITY PANEL ════ -->
+        <div class="card panel" th:classappend="${activeTab == 'security'} ? ' active' : ''">
+            <div class="card-header">
+                <div class="icon-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg></div>
+                <div>
+                    <div class="card-title">Security & Password</div>
+                    <div class="card-sub">Manage your account security settings</div>
+                </div>
+            </div>
+
+            <form th:action="@{/profile/security}" th:object="${passwordForm}" method="post" class="form-body">
+                <div class="form-grid">
                     <div class="fg full">
-                        <label>Detailed Address</label>
+                        <label>Current Password</label>
                         <div class="iw">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                style="top:14px;position:absolute">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                      d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4v-3.25l3.243-3.243A6 6 0 1115 9z" />
                             </svg>
-                            <textarea id="editAddressDetail" name="addressDetail" style="padding-left:2.2rem"
-                                required></textarea>
+                            <input type="password" th:field="*{currentPassword}" />
                         </div>
+                        <span class="error-text" th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}"></span>
+                    </div>
+                    <div class="fg">
+                        <label>New Password</label>
+                        <div class="iw" th:classappend="${#fields.hasErrors('newPassword')} ? 'has-error' : ''">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <input type="password" th:field="*{newPassword}" />
+                        </div>
+                        <span class="error-text" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></span>
+                    </div>
+                    <div class="fg">
+                        <label>Confirm Password</label>
+                        <div class="iw" th:classappend="${#fields.hasErrors('confirmPassword')} ? 'has-error' : ''">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            <input type="password" th:field="*{confirmPassword}" />
+                        </div>
+                        <span class="error-text" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
                     </div>
                 </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-outline" onclick="closeEditModal()">Cancel</button>
-                    <button type="submit" class="btn-primary">Update</button>
-                </div>
+                <button type="submit" class="btn-primary" style="margin-top:1.25rem">Update Password</button>
             </form>
         </div>
+
+    </main>
+</div>
+
+<!-- ═══ EDIT ADDRESS MODAL ═══ -->
+<div class="modal-backdrop" id="editModal" onclick="closeEditModal(event)">
+    <div class="modal">
+        <div class="modal-title">Edit Address</div>
+        <form id="editForm" method="post" th:action="@{/}" th:object="${editAddress}">
+            <div class="form-grid" style="margin-bottom:1rem">
+                <div class="fg">
+                    <label>Recipient Name</label>
+                    <div class="iw" th:classappend="${#fields.hasErrors('recipientName')} ? 'has-error' : ''">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <input type="text" id="editRecipientName" th:field="*{recipientName}" />
+                    </div>
+                    <span class="error-text" th:if="${#fields.hasErrors('recipientName')}" th:errors="*{recipientName}"></span>
+                </div>
+                <div class="fg">
+                    <label>Phone</label>
+                    <div class="iw" th:classappend="${#fields.hasErrors('phone')} ? 'has-error' : ''">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                        <input type="tel" id="editPhone" th:field="*{phone}" />
+                    </div>
+                    <span class="error-text" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+                </div>
+                <div class="fg full">
+                    <label>Detailed Address</label>
+                    <div class="iw" th:classappend="${#fields.hasErrors('addressDetail')} ? 'has-error' : ''">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                             style="top:14px;position:absolute">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.244a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <textarea id="editAddressDetail" th:field="*{addressDetail}" style="padding-left:2.2rem"></textarea>
+                    </div>
+                    <span class="error-text" th:if="${#fields.hasErrors('addressDetail')}" th:errors="*{addressDetail}"></span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-outline" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Update</button>
+            </div>
+        </form>
     </div>
+</div>
 
 
 
-    <script>
-        function toggleAddForm() {
-            const box = document.getElementById('addAddressForm');
-            box.classList.toggle('open');
+<script th:inline="javascript">
+    // Form states from server
+    /*[# th:if="${showAddAddressForm}"]*/
+    document.getElementById('addAddressForm').classList.add('open');
+    /*[/]*/
+
+    /*[# th:if="${showEditAddressModal}"]*/
+    const editId = /*[[${showEditAddressModal}]]*/ null;
+    if (editId) {
+        document.getElementById('editForm').action = '/profile/addresses/' + editId + '/edit';
+        document.getElementById('editModal').classList.add('open');
+    }
+    /*[/]*/
+
+    function toggleAddForm() {
+        const box = document.getElementById('addAddressForm');
+        box.classList.toggle('open');
+    }
+
+    function openEditModal(btn) {
+        const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+        const phone = btn.getAttribute('data-phone');
+        const detail = btn.getAttribute('data-detail');
+        document.getElementById('editForm').action = '/profile/addresses/' + id + '/edit';
+        document.getElementById('editRecipientName').value = name;
+        document.getElementById('editPhone').value = phone;
+        document.getElementById('editAddressDetail').value = detail;
+        document.getElementById('editModal').classList.add('open');
+    }
+
+    function closeEditModal(e) {
+        if (!e || e.target === document.getElementById('editModal')) {
+            document.getElementById('editModal').classList.remove('open');
         }
-
-        function openEditModal(btn) {
-            const id = btn.getAttribute('data-id');
-            const name = btn.getAttribute('data-name');
-            const phone = btn.getAttribute('data-phone');
-            const detail = btn.getAttribute('data-detail');
-            document.getElementById('editForm').action = '/profile/addresses/' + id + '/edit';
-            document.getElementById('editRecipientName').value = name;
-            document.getElementById('editPhone').value = phone;
-            document.getElementById('editAddressDetail').value = detail;
-            document.getElementById('editModal').classList.add('open');
-        }
-
-        function closeEditModal(e) {
-            if (!e || e.target === document.getElementById('editModal')) {
-                document.getElementById('editModal').classList.remove('open');
-            }
-        }
+    }
 
 
 
-        // Auto-dismiss flash alerts
-        setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(a => {
-                a.style.transition = 'opacity .5s';
-                a.style.opacity = '0';
-                setTimeout(() => a.remove(), 500);
-            });
-        }, 5000);
-
-        // Input label focus color
-        document.querySelectorAll('input, textarea').forEach(el => {
-            el.addEventListener('focus', () => {
-                el.closest('.fg')?.querySelector('label')?.style.setProperty('color', 'var(--primary)');
-            });
-            el.addEventListener('blur', () => {
-                el.closest('.fg')?.querySelector('label')?.style.removeProperty('color');
-            });
+    // Auto-dismiss flash alerts
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(a => {
+            a.style.transition = 'opacity .5s';
+            a.style.opacity = '0';
+            setTimeout(() => a.remove(), 500);
         });
-    </script>
+    }, 5000);
+
+    // Input label focus color
+    document.querySelectorAll('input, textarea').forEach(el => {
+        el.addEventListener('focus', () => {
+            el.closest('.fg')?.querySelector('label')?.style.setProperty('color', 'var(--primary)');
+        });
+        el.addEventListener('blur', () => {
+            el.closest('.fg')?.querySelector('label')?.style.removeProperty('color');
+        });
+    });
+
+    function showToast(message, type = 'success') {
+        let container = document.getElementById('toastContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        let icon = '';
+        if (type === 'error') {
+            icon = '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+        } else if (type === 'success') {
+            icon = '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+        } else {
+            icon = '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+        }
+
+        toast.innerHTML = `${icon}<span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // Trigger toast for flash messages
+    /*[# th:if="${successMessage}"]*/
+    showToast(/*[[${successMessage}]]*/ 'Success!', 'success');
+    /*[/]*/
+    /*[# th:if="${errorMessage}"]*/
+    showToast(/*[[${errorMessage}]]*/ 'Error!', 'error');
+    /*[/]*/
+</script>
 </body>
 
 </html>

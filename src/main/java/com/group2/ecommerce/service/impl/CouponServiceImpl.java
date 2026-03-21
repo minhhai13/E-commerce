@@ -15,10 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class CouponServiceImpl implements CouponService {
+
 
     private static final int PAGE_SIZE = 10;
 
@@ -41,7 +43,7 @@ public class CouponServiceImpl implements CouponService {
 
     private Coupon findEntityById(Long id) {
         return couponRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy coupon: " + id));
+                .orElseThrow(() -> new RuntimeException("Coupon not found: " + id));
     }
 
     // ─────────────── Queries ───────────────
@@ -65,18 +67,18 @@ public class CouponServiceImpl implements CouponService {
     public void save(Long id, CouponRequest request) {
         // ensure valid date range
         if (request.getValidFrom().isAfter(request.getValidUntil())) {
-            throw new IllegalArgumentException("Ngày bắt đầu phải trước ngày kết thúc.");
+            throw new IllegalArgumentException("Start date must be before end date.");
         }
 
         // ensure percentage discount does not exceed 100%
         if (request.getDiscountType() == DiscountType.PERCENTAGE && request.getDiscountValue().compareTo(BigDecimal.valueOf(100)) > 0) {
-            throw new IllegalArgumentException("Giá trị giảm giá theo phần trăm không được vượt quá 100%.");
+            throw new IllegalArgumentException("Percentage discount value cannot exceed 100%.");
         }
 
         if (id == null) {
             // create new
             if (couponRepository.existsByCode(request.getCode())) {
-                throw new IllegalArgumentException("Mã coupon đã tồn tại.");
+                throw new IllegalArgumentException("Coupon code already exists.");
             }
             Coupon coupon = Coupon.builder()
                     .code(request.getCode())
@@ -92,7 +94,7 @@ public class CouponServiceImpl implements CouponService {
         } else {
             // update existing
             if (couponRepository.existsByCodeAndIdNot(request.getCode(), id)) {
-                throw new IllegalArgumentException("Mã coupon đã tồn tại.");
+                throw new IllegalArgumentException("Coupon code already exists.");
             }
             Coupon coupon = findEntityById(id);
             coupon.setCode(request.getCode());
@@ -119,5 +121,29 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public long countAll() {
         return couponRepository.count();
+    }
+
+    @Override
+    public CouponResponse validateCoupon(String code) {
+        Coupon coupon = couponRepository.findByCode(code)
+                .orElseThrow(() -> new IllegalArgumentException("Coupon code does not exist."));
+
+        if (!coupon.isActive()) {
+            throw new IllegalArgumentException("Coupon code has been disabled.");
+        }
+
+        if (coupon.getUsedCount() >= coupon.getUsageLimit()) {
+            throw new IllegalArgumentException("Coupon has reached its usage limit.");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(coupon.getValidFrom())) {
+            throw new IllegalArgumentException("Coupon is not valid yet.");
+        }
+        if (now.isAfter(coupon.getValidUntil())) {
+            throw new IllegalArgumentException("Coupon has expired.");
+        }
+
+        return toResponse(coupon);
     }
 }

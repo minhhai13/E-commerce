@@ -484,10 +484,10 @@
                 <span th:text="'$' + ${#numbers.formatDecimal(cartTotal, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
             </div>
 
-            <button class="btn-checkout" type="button">
+            <a th:href="@{/checkout}" class="btn-checkout" style="text-decoration: none;">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:20px;height:20px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 Proceed to Checkout
-            </button>
+            </a>
             <a th:href="@{/shop}" class="btn-continue">Continue Shopping</a>
         </div>
     </div>

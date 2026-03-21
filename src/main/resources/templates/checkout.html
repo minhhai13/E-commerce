@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout – ShopZone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --primary-light: #EEF2FF;
+            --bg: #F8FAFC;
+            --surface: #FFFFFF;
+            --border: #E2E8F0;
+            --text: #0F172A;
+            --text-muted: #64748B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --radius: 16px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── NAV ── */
+        .topnav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 5%;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--text);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-btn {
+            position: relative;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .cart-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        .user-btn {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.5rem 0.4rem 0.4rem;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .user-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #818CF8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            padding-right: 0.5rem;
+        }
+
+        /* ── DROPDOWN ── */
+        .user-dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--surface);
+            min-width: 160px;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            z-index: 1000;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .user-dropdown-container:hover .user-dropdown-menu {
+            display: block;
+        }
+
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 1.25rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .user-dropdown-item:hover {
+            background-color: #F1F5F9;
+            color: var(--primary);
+        }
+
+        .user-dropdown-item.danger:hover {
+            background-color: #FEF2F2;
+            color: #EF4444;
+        }
+
+        /* ── CATEGORY DROPDOWN ── */
+        .nav-item-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface);
+            min-width: 220px;
+            box-shadow: var(--shadow-md);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 0.75rem 0;
+            z-index: 1100;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .nav-item-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .dropdown-item svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.5;
+        }
+
+        /* ── CHECKOUT PAGE ── */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5% 5rem;
+            flex: 1;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 992px) {
+            .page-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            grid-column: 1 / -1;
+        }
+
+        .section {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            grid-column: 1 / -1;
+        }
+
+        .alert-success {
+            background: #ECFDF5;
+            color: #047857;
+            border: 1px solid #A7F3D0;
+        }
+
+        .alert-error {
+            background: #FEF2F2;
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+        }
+
+        /* Address Card */
+        .address-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .address-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .address-text {
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .btn-outline {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 1.2rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-danger {
+            background: var(--surface);
+            color: var(--error);
+            border: 1px solid var(--error);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #FEF2F2;
+        }
+
+        /* Order Summary */
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item.total {
+            font-weight: 800;
+            font-size: 1.25rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--text);
+        }
+
+        .summary-label {
+            color: var(--text-muted);
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .cart-item-img {
+            width: 60px;
+            height: 60px;
+            background: #F1F5F9;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .cart-item-qty {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .cart-item-price {
+            font-weight: 600;
+        }
+
+        .btn-place-order {
+            display: block;
+            width: 100%;
+            padding: 1.1rem;
+            border-radius: 99px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 1.5rem;
+            transition: background 0.3s;
+        }
+
+        .btn-place-order:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="topnav">
+        <a class="logo" th:href="@{/}"><span>Shop</span>Zone</a>
+
+        <div class="nav-links">
+            <a th:href="@{/}" class="nav-link">Home</a>
+            <a th:href="@{/shop}" class="nav-link">Shop</a>
+            <div class="nav-item-dropdown">
+                <a th:href="@{/categories}" class="nav-link">Categories</a>
+                <div class="dropdown-menu">
+                    <a th:each="cat : ${allParentCategories}" th:href="@{/shop(category=${cat.id})}"
+                        class="dropdown-item">
+                        <span th:text="${cat.name}">Category</span>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <a th:href="@{/#about}" class="nav-link">About Us</a>
+        </div>
+
+        <div class="nav-actions">
+            <a th:href="@{/cart}" class="cart-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                <div class="cart-badge" th:if="${cartItemCount != null and cartItemCount > 0}"
+                    th:text="${cartItemCount}">0</div>
+            </a>
+
+            <div th:if="${profileInfo != null}" class="user-dropdown-container">
+                <a href="#" class="user-btn">
+                    <div class="avatar"
+                        th:text="${profileInfo.fullName != null} ? ${#strings.substring(profileInfo.fullName,0,1)} : 'U'">
+                        U
+                    </div>
+                    <div class="user-name" th:text="${profileInfo.fullName}">User</div>
+                </a>
+                <div class="user-dropdown-menu">
+                    <a th:href="@{/profile}" class="user-dropdown-item">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px; height:16px">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        My Profile
+                    </a>
+                    <a th:href="@{/logout}" class="user-dropdown-item danger">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px; height:16px">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </div>
+            <a th:unless="${profileInfo != null}" th:href="@{/login}" class="user-btn" style="padding: 0.5rem 1rem;">
+                <span class="user-name" style="padding: 0;">Sign In</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <div
+            style="grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+            <h1 class="page-title" style="margin-bottom: 0; grid-column: auto;">Checkout</h1>
+            <a th:href="@{/cart}"
+                style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.2s; background: var(--surface); padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 99px;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Cart
+            </a>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+        <!-- MAIN COLUMN: ADDRESS & COUPON -->
+        <div class="checkout-main">
+
+            <div class="section">
+                <h2 class="section-title">
+                    Shipping Address
+                    <a th:if="${hasAddresses}" th:href="@{/checkout/addresses}" class="btn-outline">Change</a>
+                </h2>
+
+                <div th:if="${selectedAddress != null}" class="address-card">
+                    <div class="address-name" th:text="${selectedAddress.recipientName}">Recipient Name</div>
+                    <div class="address-text">
+                        Phone: <span th:text="${selectedAddress.phone}">0123</span><br>
+                        Address: <span th:text="${selectedAddress.addressDetail}">123 ABC</span>
+                    </div>
+                </div>
+
+                <div th:unless="${hasAddresses}">
+                    <p style="margin-bottom: 1rem; color: var(--text-muted);">You don't have any shipping addresses yet.</p>
+                    <a th:href="@{/checkout/addresses/add}" class="btn-primary"
+                        style="text-decoration: none; display: inline-block;">Add Shipping Address</a>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Coupon Code</h2>
+
+                <!-- Form add coupon -->
+                <form th:action="@{/checkout/apply-coupon}" method="post" class="form-group"
+                    th:if="${appliedCouponCode == null}">
+                    <input type="text" name="couponCode" placeholder="Enter coupon code" class="form-input" required>
+                    <button type="submit" class="btn-primary">Apply</button>
+                </form>
+                <div th:if="${couponError}"
+                    style="color: var(--error); font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1rem;"
+                    th:text="${couponError}">Invalid code</div>
+
+                <!-- Form remove coupon -->
+                <div th:if="${appliedCouponCode != null}" class="address-card"
+                    style="display: flex; justify-content: space-between; align-items: center; border-color: var(--success); background: #ECFDF5;">
+                    <div>
+                        <strong>Applied Code:</strong> <span th:text="${appliedCouponCode}"
+                            style="color: var(--success); font-weight:700;">CODE</span>
+                    </div>
+                    <form th:action="@{/checkout/apply-coupon}" method="post" style="margin:0;">
+                        <input type="hidden" name="couponCode" value="">
+                        <button type="submit" class="btn-danger">Remove</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDE COLUMN: SUMMARY -->
+        <div class="checkout-sidebar">
+            <div class="section">
+                <h2 class="section-title">Order Summary</h2>
+
+                <div class="item-list">
+                    <div th:each="item : ${cartItems}" class="cart-item">
+                        <img th:if="${item.imageName != null}" th:src="@{'/images/' + ${item.imageName}}"
+                            class="cart-item-img" alt="Product">
+                        <div th:unless="${item.imageName != null}" class="cart-item-img"
+                            style="display:flex;align-items:center;justify-content:center;color:#CBD5E1;">?</div>
+
+                        <div class="cart-item-info">
+                            <div class="cart-item-name" th:text="${item.productName}">Product</div>
+                            <div class="cart-item-qty" th:text="'Qty: ' + ${item.quantity}">Qty: 1</div>
+                        </div>
+                        <div class="cart-item-price"
+                            th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}">$0.00</div>
+                    </div>
+                </div>
+
+                <div class="summary-item">
+                    <span class="summary-label">Subtotal</span>
+                    <span th:text="'$' + ${#numbers.formatDecimal(subtotal, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Shipping</span>
+                    <span style="color: var(--success);">Free</span>
+                </div>
+                <div class="summary-item" th:if="${discountAmount > 0}">
+                    <span class="summary-label">Discount</span>
+                    <span style="color: var(--error);"
+                        th:text="'-$' + ${#numbers.formatDecimal(discountAmount, 1, 'COMMA', 2, 'POINT')}">-$0.00</span>
+                </div>
+                <div class="summary-item total">
+                    <span>Total</span>
+                    <span th:text="'$' + ${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
+                </div>
+
+                <form th:action="@{/checkout/place-order}" method="post">
+                    <button type="submit" class="btn-place-order" onclick="return confirm('Are you sure you want to place this order?')">Place Order</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <footer
+        style="background: var(--surface); border-top: 1px solid var(--border); padding: 2rem 5%; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+        &copy; 2026 ShopZone. All rights reserved.
+    </footer>
+
+</body>
+
+</html>

@@ -21,8 +21,8 @@ public class AdminCouponController {
 
     // ─── List ────────────────────────────────
     @GetMapping
-    public String listCoupons(@RequestParam(defaultValue = "") String q,
-                              @RequestParam(defaultValue = "0") int page,
+    public String listCoupons(@RequestParam(name = "q", defaultValue = "") String q,
+                              @RequestParam(name = "page", defaultValue = "0") int page,
                               Model model) {
         q = q.trim();
         Page<CouponResponse> couponsPage = couponService.getCoupons(q, page);

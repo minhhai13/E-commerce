@@ -28,9 +28,9 @@ public class AdminProductController {
 
     // ─── List ────────────────────────────────
     @GetMapping
-    public String listProducts(@RequestParam(defaultValue = "") String q,
-                               @RequestParam(required = false) Long categoryId,
-                               @RequestParam(defaultValue = "0") int page,
+    public String listProducts(@RequestParam(name = "q", defaultValue = "") String q,
+                               @RequestParam(name = "categoryId", required = false) Long categoryId,
+                               @RequestParam(name = "page", defaultValue = "0") int page,
                                Model model) {
         q = q.trim();
         Page<ProductResponse> productsPage = productService.getProducts(q.isEmpty() ? null : q, categoryId, page);
@@ -46,7 +46,7 @@ public class AdminProductController {
 
     // ─── Form (Create & Edit) ─────────────────
     @GetMapping("/form")
-    public String showForm(@RequestParam(required = false) Long id, Model model) {
+    public String showForm(@RequestParam(name = "id", required = false) Long id, Model model) {
         ProductRequest request = new ProductRequest();
         if (id != null) {
             ProductResponse product = productService.findById(id);
@@ -70,7 +70,7 @@ public class AdminProductController {
 
     // ─── Save (Create or Update) ──────────────
     @PostMapping("/save")
-    public String save(@RequestParam(required = false) Long productId,
+    public String save(@RequestParam(name = "productId", required = false) Long productId,
                        @Valid @ModelAttribute("productRequest") ProductRequest request,
                        BindingResult result,
                        Model model,
@@ -109,9 +109,9 @@ public class AdminProductController {
 
     // ─── Toggle Status ───────────────────────
     @PostMapping("/toggle/{id}")
-    public String toggleStatus(@PathVariable Long id,
-                               @RequestParam(defaultValue = "") String q,
-                               @RequestParam(defaultValue = "0") int page,
+    public String toggleStatus(@PathVariable("id") Long id,
+                               @RequestParam(name = "q", defaultValue = "") String q,
+                               @RequestParam(name = "page", defaultValue = "0") int page,
                                RedirectAttributes ra) {
         try {
             productService.toggleStatus(id);

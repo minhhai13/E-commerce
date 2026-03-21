@@ -32,7 +32,8 @@ public class ProfileController {
 
     private Long getCurrentUserId() {
         com.group2.ecommerce.entity.User user = (com.group2.ecommerce.entity.User) session.getAttribute("loggedInUser");
-        if (user != null) return user.getId();
+        if (user != null)
+            return user.getId();
         throw new IllegalStateException("User not logged in");
     }
 
@@ -210,13 +211,18 @@ public class ProfileController {
                     .addressDetail(profile.getAddressDetail())
                     .build();
 
-            model.addAttribute("profileForm", model.containsAttribute("profileForm") ? model.asMap().get("profileForm") : profileForm);
+            model.addAttribute("profileForm",
+                    model.containsAttribute("profileForm") ? model.asMap().get("profileForm") : profileForm);
             model.addAttribute("profileInfo", profile);
             model.addAttribute("orders", orderHistoryService.getOrdersByUserId(getCurrentUserId()));
             model.addAttribute("addresses", addressService.getAddressesByUserId(getCurrentUserId()));
-            model.addAttribute("newAddress", model.containsAttribute("newAddress") ? model.asMap().get("newAddress") : new AddressRequest());
-            model.addAttribute("editAddress", model.containsAttribute("editAddress") ? model.asMap().get("editAddress") : new AddressRequest());
-            model.addAttribute("passwordForm", model.containsAttribute("passwordForm") ? model.asMap().get("passwordForm") : new PasswordRequest());
+            model.addAttribute("newAddress",
+                    model.containsAttribute("newAddress") ? model.asMap().get("newAddress") : new AddressRequest());
+            model.addAttribute("editAddress",
+                    model.containsAttribute("editAddress") ? model.asMap().get("editAddress") : new AddressRequest());
+            model.addAttribute("passwordForm",
+                    model.containsAttribute("passwordForm") ? model.asMap().get("passwordForm")
+                            : new PasswordRequest());
             model.addAttribute("activeTab", model.containsAttribute("activeTab")
                     ? model.asMap().get("activeTab")
                     : activeTab);

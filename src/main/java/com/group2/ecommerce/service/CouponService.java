@@ -12,9 +12,13 @@ public interface CouponService {
 
     CouponResponse findById(Long id);
 
+
     // Create new coupon or update existing when id is non-null
     void save(Long id, CouponRequest request);
 
     // Toggle active state (enable/disable)
     void toggleStatus(Long id);
+
+    // Validate a coupon for checkout
+    CouponResponse validateCoupon(String code);
 }

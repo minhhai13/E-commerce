@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/staff-layout :: staffHead('Inventory form')}">
+    <meta charset="UTF-8">
+    <title>Edit product</title>
+
+    <style>
+        body {
+            background: url('/images/bg.jpg') no-repeat center center/cover;
+            height: 100vh;
+        }
+
+        /* overlay mờ */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 0;
+        }
+
+        /* form container */
+        .form-container {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .required {
+            color: red;
+        }
+
+        #navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body th:insert="~{fragments/staff-layout :: staffLayout('Inventory form', ~{::content})}">
+
+<div th:fragment="content">
+
+    <div class="overlay"></div>
+
+    <div class="form-container">
+
+        <!-- Navbar -->
+        <div id="navbar">
+            <h4>Edit Product #<span th:text="${id}"></span></h4>
+            <small th:text="${session.loggedInUser?.fullName}">Staff</small>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb mb-3">
+            <a th:href="@{/staff/inventory}">Products</a> / Edit Product #<span th:text="${id}"></span>
+        </div>
+
+        <form th:action="@{/staff/inventory/update/{id}(id=${id})}" method="post" enctype="multipart/form-data">
+
+            <!-- Product Name -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Product Name</strong> <span class="required">*</span></label>
+                <input type="text" class="form-control" name="product_name" placeholder="Sneakers">
+            </div>
+
+            <!-- Category -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Category</strong> <span class="required">*</span></label>
+                <input type="text" class="form-control" name="category" placeholder="Sneakers">
+            </div>
+
+            <!-- Price -->
+            <div class="mb-3" style="max-width: 250px;">
+                <label class="form-label"><strong>Price</strong> <span class="required">*</span></label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" step="0.01" class="form-control" name="price">
+                </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Stock Quantity</strong></label>
+                <input type="number" class="form-control" name="quantity" placeholder="10">
+                <small class="text-muted">
+                    Note: to update stock, please use the Inventory Management Module
+                </small>
+            </div>
+
+            <!-- Image -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Product Image</strong></label>
+                <input type="file" class="form-control" name="image">
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Description</strong></label>
+                <textarea class="form-control" name="description" rows="3"
+                          placeholder="Product description..."></textarea>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a th:href="@{/staff/inventory}" class="btn btn-secondary">Cancel</a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

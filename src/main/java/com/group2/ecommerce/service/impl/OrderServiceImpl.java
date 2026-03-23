@@ -1,8 +1,8 @@
 package com.group2.ecommerce.service.impl;
 
-import com.group2.ecommerce.entity.Order;
+import com.group2.ecommerce.entity.*;
 import com.group2.ecommerce.entity.enums.OrderStatus;
-import com.group2.ecommerce.repository.OrderRepository;
+import com.group2.ecommerce.repository.*;
 import com.group2.ecommerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,15 +14,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.group2.ecommerce.dto.CartItem;
-import com.group2.ecommerce.entity.Coupon;
-import com.group2.ecommerce.entity.OrderItem;
-import com.group2.ecommerce.entity.User;
-import com.group2.ecommerce.entity.UserAddress;
 import com.group2.ecommerce.entity.enums.DiscountType;
-import com.group2.ecommerce.repository.CouponRepository;
-import com.group2.ecommerce.repository.ProductRepository;
-import com.group2.ecommerce.repository.UserAddressRepository;
-import com.group2.ecommerce.repository.UserRepository;
 import com.group2.ecommerce.service.CartService;
 
 @Service
@@ -30,6 +22,7 @@ import com.group2.ecommerce.service.CartService;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
     private final UserRepository userRepository;
     private final UserAddressRepository userAddressRepository;
     private final CouponRepository couponRepository;
@@ -45,6 +38,48 @@ public class OrderServiceImpl implements OrderService {
     public BigDecimal sumRevenue() {
         BigDecimal revenue = orderRepository.sumTotalAmountByStatus(OrderStatus.COMPLETED);
         return revenue != null ? revenue : BigDecimal.ZERO;
+    }
+
+    @Override
+    public List<Order> fetchOrderList() {
+        return (List<Order>) orderRepository.findAll();
+    }
+
+    @Override
+    public Order findOrderById(Long id) {
+        return (Order) orderRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public boolean advanceOrderStatus(Long id) {
+        Order order = findOrderById(id);
+        if(order == null) return false;
+        OrderStatus currentStatus = order.getStatus();
+        if(currentStatus.ordinal() >= 1 && currentStatus.ordinal() <=4){
+            OrderStatus nextStatus = OrderStatus.fromValue(currentStatus.getValue()+1);
+            order.setStatus(nextStatus);
+            orderRepository.save(order);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public boolean cancelOrder(Long id) {
+        Order order = findOrderById(id);
+        if(order == null) return false;
+        if(order.getStatus() != OrderStatus.WAITING_CONFIRMATION) return false;
+        List<OrderItem> orderItems = orderItemRepository.findByOrder(order);
+        for(OrderItem item : orderItems){
+            Product product = item.getProduct();
+            product.setStockQuantity(product.getStockQuantity() + item.getQuantity());
+            productRepository.save(product);
+        }
+        order.setStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
+        return true;
     }
 
     @Override

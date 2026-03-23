@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService{
 
     private static final int PAGE_SIZE = 10;
 
@@ -55,8 +55,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> authenticate(String email, String password) {
-        return userRepository.findByEmail(email)
-                .filter(user -> PasswordUtil.verifyPassword(password, user.getPasswordHash()));
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty() || !PasswordUtil.verifyPassword(password, userOpt.get().getPasswordHash())) {
+            return Optional.empty();
+        }
+        User user = userOpt.get();
+        if (!user.isActive()) {
+            throw new IllegalArgumentException("Your account has been locked");
+        }
+
+        return Optional.of(user);
     }
 
     // ─────────────── Commands ────────────────

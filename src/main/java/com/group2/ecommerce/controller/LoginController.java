@@ -24,15 +24,6 @@ public class LoginController {
 
     private final UserService userService;
 
-    @GetMapping("/")
-    public String home(HttpSession session) {
-        User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        return redirectByRole(user.getRole());
-    }
-
     @GetMapping("/login")
     public String loginPage(Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");

@@ -30,10 +30,17 @@ public class SecurityFilter implements Filter {
 
         // Allow public resources
         if (relativePath.startsWith("/static/")
+                || relativePath.equals("/")
+                || relativePath.equals("/home")
                 || relativePath.equals("/login")
                 || relativePath.equals("/logout")
                 || relativePath.equals("/register")
-                || relativePath.equals("/403")) {
+                || relativePath.equals("/403")
+                || relativePath.equals("/shop")
+                || relativePath.equals("/categories")
+                || relativePath.startsWith("/products/")
+                || relativePath.startsWith("/cart")
+                || relativePath.startsWith("/images/")) {
             chain.doFilter(request, response);
             return;
         }

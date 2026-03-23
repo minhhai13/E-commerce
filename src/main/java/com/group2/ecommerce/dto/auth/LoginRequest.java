@@ -2,7 +2,7 @@ package com.group2.ecommerce.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +13,6 @@ public class LoginRequest {
     @NotBlank(message = "Email field is required")
     private String email;
 
-    @Size(min = 8, message = "Password must be at least 8 characters long")
     @NotBlank(message = "Password field is required")
     private String password;
 }

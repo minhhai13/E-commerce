@@ -48,7 +48,7 @@
                         <td th:text="${c.id}"></td>
                         <td th:text="${c.code}"></td>
                         <td th:text="${c.discountType.name()}"></td>
-                        <td th:text="${c.discountType == T(com.group2.ecommerce.entity.enums.DiscountType).PERCENTAGE} ? ${c.discountValue} + '%' : ${c.discountValue}"></td>
+                        <td th:text="${c.discountType.name() == 'PERCENTAGE'} ? ${c.discountValue} + '%' : ${c.discountValue}"></td>
                         <td th:text="${#temporals.format(c.validUntil,'dd/MM/yyyy HH:mm')}"></td>
                         <td>
                             <span th:if="${c.active}" class="badge text-bg-success">Active</span>

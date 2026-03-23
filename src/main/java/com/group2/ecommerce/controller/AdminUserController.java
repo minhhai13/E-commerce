@@ -22,8 +22,8 @@ public class AdminUserController {
 
     // ─── List ────────────────────────────────
     @GetMapping
-    public String listUsers(@RequestParam(defaultValue = "") String q,
-                            @RequestParam(defaultValue = "0") int page,
+    public String listUsers(@RequestParam(name = "q", defaultValue = "") String q,
+                            @RequestParam(name = "page", defaultValue = "0") int page,
                             Model model) {
         q=q.trim();
         Page<UserResponse> usersPage = userService.getUsers(q, page);
@@ -85,8 +85,8 @@ public class AdminUserController {
     // ─── Toggle Status ───────────────────────
     @PostMapping("/toggle/{id}")
     public String toggleStatus(@PathVariable Long id,
-                               @RequestParam(defaultValue = "") String q,
-                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(name = "q", defaultValue = "") String q,
+                               @RequestParam(name = "page", defaultValue = "0") int page,
                                RedirectAttributes ra) {
         try {
             userService.toggleStatus(id);

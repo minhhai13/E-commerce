@@ -20,8 +20,8 @@ public class AdminCategoryController {
 
     // ─── List ────────────────────────────────
     @GetMapping
-    public String listCategories(@RequestParam(defaultValue = "") String q,
-                                 @RequestParam(defaultValue = "0") int page,
+    public String listCategories(@RequestParam(name = "q", defaultValue = "") String q,
+                                 @RequestParam(name = "page", defaultValue = "0") int page,
                                  Model model) {
         q = q.trim();
         Page<Category> categoriesPage = categoryService.getCategories(q, page);
@@ -59,9 +59,9 @@ public class AdminCategoryController {
 
     // ─── Save (Create or Update) ──────────────
     @PostMapping("/save")
-    public String save(@RequestParam(required = false) Long categoryId,
-                       @RequestParam String name,
-                       @RequestParam(required = false) String description,
+    public String save(@RequestParam(name = "categoryId", required = false) Long categoryId,
+                       @RequestParam(name = "name") String name,
+                       @RequestParam(name = "description", required = false) String description,
                        @RequestParam(required = false) Long parentId,
                        Model model,
                        RedirectAttributes ra) {
@@ -87,8 +87,8 @@ public class AdminCategoryController {
     // ─── Toggle Status ───────────────────────
     @PostMapping("/toggle/{id}")
     public String toggleStatus(@PathVariable Long id,
-                               @RequestParam(defaultValue = "") String q,
-                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(name = "q", defaultValue = "") String q,
+                               @RequestParam(name = "page", defaultValue = "0") int page,
                                RedirectAttributes ra) {
         try {
             categoryService.toggleStatus(id);

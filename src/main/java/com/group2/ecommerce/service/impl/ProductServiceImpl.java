@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -159,10 +160,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public boolean updateProductQuantity(Long id, int quantity) {
+    public boolean updateProductQuantityandPrice(Long id, int quantity, BigDecimal price) {
         Product p = isProductExisted(id);
         if(p == null) return false;
         p.setStockQuantity(quantity);
+        p.setPrice(price);
         productRepository.save(p);
         return true;    }
 
@@ -190,6 +192,16 @@ public class ProductServiceImpl implements ProductService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }    }
+
+    @Override
+    public long countByStockQuantityLessThan(int quantity) {
+        return productRepository.countByStockQuantityLessThan(quantity);
+    }
+
+    @Override
+    public List<Product> findTop5ByStockQuantityLessThanOrderByStockQuantityAsc(int quantity) {
+        return productRepository.findTop5ByStockQuantityLessThanOrderByStockQuantityAsc(quantity);
+    }
 
     // Trong ProductServiceImpl.java
     private Product findEntityById(Long id) {

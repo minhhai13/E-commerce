@@ -1,12 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
-<head th:replace="~{fragments/staff-layout :: staffHead('Dashboard')}">
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body th:insert="~{fragments/staff-layout :: staffLayout('Dashboard', ~{::content})}">
-    <div th:fragment="content">
-            Dashboard
-    </div>
-</body>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/staff-layout :: staffHead('Dashboard')}">
+        <meta charset="UTF-8">
+        <title>Dashboard</title>
+    </head>
+    <body class="bg-light" th:insert="~{fragments/staff-layout :: staffLayout('Dashboard', ~{::content})}">
+        <div th:fragment="content" class="container mt-4">
+
+            <h2 class="mb-4">Tổng quan hệ thống</h2>
+
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="card-title text-dark">Đơn chờ xác nhận</h6>
+                            <h2 class="mb-0 text-dark fw-bold" th:text="${pendingOrdersCount}">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="card-title">Doanh thu</h6>
+                            <h3 class="mb-0 fw-bold" th:text="'$'+${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">0 đ</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="card-title">Sắp hết hàng</h6>
+                            <h2 class="mb-0 fw-bold" th:text="${lowStockCount}">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="card-title">Tổng mã sản phẩm</h6>
+                            <h2 class="mb-0 fw-bold" th:text="${totalProducts}">0</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-lg-6">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0 text-danger">Sản phẩm sắp hết hàng</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="product : ${lowStockProducts}">
+                                    <div>
+                                        <strong th:text="${product.name}">Tên sản phẩm</strong>
+                                        <br>
+                                        <small class="text-muted" th:text="'Giá: ' + ${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></small>
+                                    </div>
+                                    <span class="badge bg-danger rounded-pill fs-6" th:text="'Còn ' + ${product.stockQuantity} + ' cái'"></span>
+                                </li>
+                                <li class="list-group-item text-center text-muted py-3" th:if="${lowStockProducts.isEmpty()}">
+                                    Kho hàng đang dồi dào, không có sản phẩm nào thiếu hụt.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Tỉ lệ trạng thái đơn hàng</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="orderStatusChart" width="100" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script th:inline="javascript">
+                const pending = /*[[${chartPending}]]*/ 0;
+                const inTransit = /*[[${chartInTransit}]]*/ 0;
+                const completed = /*[[${chartCompleted}]]*/ 0;
+                const cancelled = /*[[${chartCancelled}]]*/ 0;
+
+                const ctx = document.getElementById('orderStatusChart').getContext('2d');
+                const orderStatusChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Chờ xác nhận', 'Đang giao', 'Hoàn thành', 'Đã hủy'],
+                        datasets: [{
+                            data: [pending, inTransit, completed, cancelled],
+                            backgroundColor: [
+                                '#ffc107',
+                                '#0d6efd',
+                                '#198754',
+                                '#dc3545'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+            </script>
+        </div>
+    </body>
 </html>

@@ -10,8 +10,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+    long countByStockQuantityLessThan(int quantity);
+    List<Product> findTop5ByStockQuantityLessThanOrderByStockQuantityAsc(int quantity);
     Product findProductById(Long id);
     // Fetch all active products with pagination and sorting
     Page<Product> findAllByIsActiveTrue(Pageable pageable);

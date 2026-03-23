@@ -83,6 +83,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public long countOrderByStatus(OrderStatus status) {
+        return orderRepository.countByStatus(status);
+    }
+
+
+    @Override
+    public List<Order> findOrderByStatus(OrderStatus status) {
+        return (List<Order>) orderRepository.findByStatus(status);
+    }
+
+    @Override
     @Transactional
     public Order createOrder(Long userId, Long addressId, String couponCode, HttpSession session) {
         User user = userRepository.findById(userId)

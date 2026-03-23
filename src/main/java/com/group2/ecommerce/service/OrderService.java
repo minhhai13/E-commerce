@@ -1,6 +1,7 @@
 package com.group2.ecommerce.service;
 
 import com.group2.ecommerce.entity.Order;
+import com.group2.ecommerce.entity.enums.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 
@@ -20,4 +21,9 @@ public interface OrderService {
     boolean advanceOrderStatus(Long id);
 
     boolean cancelOrder(Long id);
+
+    long countOrderByStatus(OrderStatus status);
+
+    List<Order> findOrderByStatus(OrderStatus status);
+
 }

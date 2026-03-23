@@ -1,9 +1,14 @@
 package com.group2.ecommerce.controller;
 
 import com.group2.ecommerce.entity.Order;
+import com.group2.ecommerce.entity.OrderItem;
+import com.group2.ecommerce.entity.Product;
 import com.group2.ecommerce.entity.User;
+import com.group2.ecommerce.entity.enums.OrderStatus;
 import com.group2.ecommerce.entity.enums.Role;
+import com.group2.ecommerce.repository.ProductRepository;
 import com.group2.ecommerce.service.OrderService;
+import com.group2.ecommerce.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -21,7 +27,8 @@ import java.util.List;
 public class OrderLifeCycleController {
     @Autowired
     private OrderService orderService;
-
+    @Autowired
+    private ProductService productService;
 
     @GetMapping({"", "/", "/dashboard"})
     String toDashboard(Model model, HttpSession ses){
@@ -29,7 +36,31 @@ public class OrderLifeCycleController {
         if(user.getRole()!= Role.STAFF){
             return "error/403";
         }
-        orderService.countAll();
+        long pendingOrdersCount = orderService.countOrderByStatus(OrderStatus.WAITING_CONFIRMATION);
+        long lowStockCount = productService.countByStockQuantityLessThan(10);
+        long totalProducts = productService.countAll();
+
+        List<Order> completedOrders = orderService.findOrderByStatus(OrderStatus.COMPLETED);
+        BigDecimal totalRevenue = completedOrders.stream()
+                .map(Order::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        List<Product> lowStockProducts = productService.findTop5ByStockQuantityLessThanOrderByStockQuantityAsc(10);
+
+        long inTransitCount = orderService.countOrderByStatus(OrderStatus.IN_TRANSIT);
+        long cancelledCount = orderService.countOrderByStatus(OrderStatus.CANCELLED);
+        long completedCount = completedOrders.size();
+
+        model.addAttribute("pendingOrdersCount", pendingOrdersCount);
+        model.addAttribute("totalRevenue", totalRevenue);
+        model.addAttribute("lowStockCount", lowStockCount);
+        model.addAttribute("totalProducts", totalProducts);
+
+        model.addAttribute("lowStockProducts", lowStockProducts);
+
+        model.addAttribute("chartPending", pendingOrdersCount);
+        model.addAttribute("chartInTransit", inTransitCount);
+        model.addAttribute("chartCompleted", completedCount);
+        model.addAttribute("chartCancelled", cancelledCount);
         return "order-lifecycle/order-dashboard";
     }
     @GetMapping("/list")
@@ -55,6 +86,12 @@ public class OrderLifeCycleController {
             status = "Đơn hàng có id #" + id + " không tồn tại.";
             redirectAttributes.addFlashAttribute("status", status);
             return "redirect:/staff/list";
+        }
+        int totalQuantity = 0;
+        if (order.getItems() != null) {
+            for (OrderItem item : order.getItems()) {
+                totalQuantity += item.getQuantity();
+            }
         }
         model.addAttribute("order",order);
         return "order-lifecycle/order-detail";

@@ -20,4 +20,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.status = :status")
     BigDecimal sumTotalAmountByStatus(@Param("status") OrderStatus status);
+
+    long countByStatus(OrderStatus status);
+    List<Order> findByStatus(OrderStatus status);
 }

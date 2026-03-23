@@ -1,21 +1,19 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
-    <head th:replace="~{fragments/staff-layout :: staffHead('Inventory list')}">
+    <head th:replace="~{fragments/staff-layout :: staffHead('Danh sách tồn kho')}">
         <meta charset="UTF-8">
-        <title>Inventory List</title>
+        <title>Danh sách tồn kho</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     </head>
-    <body th:insert="~{fragments/staff-layout :: staffLayout('Inventory list', ~{::content})}">
+    <body th:insert="~{fragments/staff-layout :: staffLayout('Danh sách tồn kho', ~{::content})}">
         <div th:fragment="content" class="container mt-4">
             <div th:if="${status != null}"
                  class="alert alert-dismissible fade show"
-                 th:classappend="${status == 'True' ? 'alert-success' : 'alert-danger'}"
+                 th:classappend="${#strings.contains(status, 'thành công') ? 'alert-success' : 'alert-danger'}"
                  role="alert">
-
-                <span th:text="${status == 'True' ? 'Thao tác thành công!' : 'Thao tác thất bại hoặc sản phẩm đã bị khóa.'}"></span>
-
+                <span th:text="${status}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <div class="table-responsive">
@@ -23,13 +21,13 @@
                     <thead class="table-light">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Stock</th>
-                        <th scope="col">Status</th>
-                        <th scope="col" class="text-center">Actions</th>
+                        <th scope="col">Hình ảnh</th>
+                        <th scope="col">Tên sản phẩm</th>
+                        <th scope="col">Danh mục</th>
+                        <th scope="col">Giá tiền</th>
+                        <th scope="col">Tồn kho</th>
+                        <th scope="col">Trạng thái</th>
+                        <th scope="col" class="text-center">Hành dộng</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -42,14 +40,14 @@
                                  th:src="@{'/static/images/' + ${p.imageName}}" width="40" height="40" class="rounded">
                         </td>
 
-                        <td th:text="${p.name}">Sneakers</td>
-                        <td th:text="${p.category.name}">Sneakers</td>
-                        <td th:text="${#numbers.formatDecimal(p.price, 1, 2)}">10.00</td>
-                        <td th:text="${p.stockQuantity}">10</td>
+                        <td th:text="${p.name}"></td>
+                        <td th:text="${p.category.name}"></td>
+                        <td th:text="${#numbers.formatDecimal(p.price, 1, 2)}"></td>
+                        <td th:text="${p.stockQuantity}"></td>
 
                         <td>
-                            <span th:if="${p.isActive}" class="badge bg-success">Active</span>
-                            <span th:unless="${p.isActive}" class="badge bg-secondary">Inactive</span>
+                            <span th:if="${p.isActive}" class="badge bg-success">Hoạt động</span>
+                            <span th:unless="${p.isActive}" class="badge bg-secondary">Đang tạm dừng</span>
                         </td>
 
                         <td>

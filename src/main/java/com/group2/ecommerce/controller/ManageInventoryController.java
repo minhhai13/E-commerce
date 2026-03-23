@@ -36,10 +36,15 @@ public class ManageInventoryController {
     @GetMapping("/update/{id}")
     private String toUpdateForm(@PathVariable Long id, Model model, HttpSession ses){
         User user = (User) ses.getAttribute("loggedInUser");
-        if(user.getRole()!= Role.STAFF){
+        if (user == null || user.getRole() != Role.STAFF) {
             return "error/403";
         }
-        model.addAttribute("id",id);
+        Product p = productService.isProductExisted(id);
+        if (p == null) {
+            return "redirect:/staff/inventory";
+        }
+        model.addAttribute("product", p);
+        model.addAttribute("id", id);
         return "inventory-management/inventory-form";
     }
     @PostMapping("/delete/{id}")
@@ -56,14 +61,20 @@ public class ManageInventoryController {
     }
 
     @PostMapping("/update/{id}")
-    private String updateProduct(@PathVariable Long id, @RequestAttribute("quantity") int quantity,
+    private String updateProduct(@PathVariable Long id, @RequestParam("quantity") int quantity, @RequestParam("price") BigDecimal price,
                                  RedirectAttributes redirectAttributes, HttpSession ses){
         String status;
         User user = (User) ses.getAttribute("loggedInUser");
         if(user.getRole()!= Role.STAFF){
             return "error/403";
         }
-        boolean checkUpdate = productService.updateProductQuantity(id, quantity);
+        Product p = productService.isProductExisted(id);
+        if (p == null) {
+            status = "false";
+            redirectAttributes.addFlashAttribute("status", status);
+            return "redirect:/staff/inventory";
+        }
+        boolean checkUpdate = productService.updateProductQuantityandPrice(id, quantity, price);
         status = checkUpdate?"Cập nhật sản phẩm thành công":"Cập nhật sản phẩm thất bại.";
         redirectAttributes.addFlashAttribute("status",status);
         return "redirect:/staff/inventory";
@@ -86,7 +97,7 @@ public class ManageInventoryController {
         String imageName = productService.saveImage(image);
         Product product = new Product(id,category,productName,description,price,quantity,imageName,true, LocalDateTime.now());
         boolean checkCreate = productService.createProduct(product);
-        status = checkCreate?"True":"False";
+        status = checkCreate?"Tạo sản phẩm mới thành công":"Tạo sản phẩm mới thất bại";
         redirectAttributes.addFlashAttribute("status",status);
         return "redirect:/staff/inventory";
     }

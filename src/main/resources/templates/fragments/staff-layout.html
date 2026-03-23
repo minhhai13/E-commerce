@@ -15,7 +15,7 @@
     <!-- Sidebar -->
     <nav class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white" style="width: 240px;">
         <a href="/staff/dashboard" class="text-white text-decoration-none fw-bold fs-5 mb-4 d-block">
-            <i class="fa-solid fa-store me-2"></i><Staff></Staff>Staff Panel
+            <i class="fa-solid fa-store me-2"></i><Staff></Staff>Trang nhân viên
         </a>
         <ul class="nav nav-pills flex-column mb-auto gap-1">
             <li class="nav-item">
@@ -27,19 +27,19 @@
             <li class="nav-item">
                 <a th:href="@{/staff/list}" th:classappend="${activePage == 'order-list'} ? ' active'"
                    class="nav-link text-white-50">
-                    <i class="fa-solid fa-users me-2"></i>Order List
+                    <i class="fa-solid fa-file-invoice me-2"></i>Danh sách đơn hàng
                 </a>
             </li>
             <li class="nav-item">
                 <a th:href="@{/staff/inventory}" th:nclassappend="${activePage == 'order-list'} ? ' active'"
                    class="nav-link text-white-50">
-                    <i class="fa-solid fa-users me-2"></i>Inventory
+                    <i class="fa-solid fa-boxes-stacked me-2"></i>Danh sách tồn kho
                 </a>
             </li>
         </ul>
         <hr class="border-secondary" />
         <a href="/logout" class="nav-link text-danger">
-            <i class="fa-solid fa-right-from-bracket me-2"></i>Logout
+            <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất
         </a>
     </nav>
 

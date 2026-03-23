@@ -32,12 +32,12 @@
                     </thead>
                     <tbody>
                     <tr th:each="p, iterStat : ${product_list}">
-                        <th scope="row" th:text="${iterStat.count}">1</th>
+                        <th scope="row" th:text="${iterStat.count}"></th>
 
                         <td>
                             <span th:if="${p.imageName == null or p.imageName == ''}">—</span>
                             <img th:if="${p.imageName != null and p.imageName != ''}"
-                                 th:src="@{'/static/images/' + ${p.imageName}}" width="40" height="40" class="rounded">
+                                 th:src="@{'/images/' + ${p.imageName}}" width="40" height="40" class="rounded">
                         </td>
 
                         <td th:text="${p.name}"></td>

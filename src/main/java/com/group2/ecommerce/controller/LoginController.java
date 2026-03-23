@@ -44,16 +44,21 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             return "login";
         }
+        try {
+            Optional<User> userOpt = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
-        Optional<User> userOpt = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-        if (userOpt.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Invalid email or password.");
+            if (userOpt.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Invalid email or password.");
+                return "redirect:/login";
+            }
+            User user = userOpt.get();
+            session.setAttribute("loggedInUser", user);
+            return redirectByRole(user.getRole());
+
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/login";
         }
-
-        User user = userOpt.get();
-        session.setAttribute("loggedInUser", user);
-        return redirectByRole(user.getRole());
     }
 
     @GetMapping("/logout")

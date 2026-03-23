@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/staff-layout :: staffHead('Biểu mẫu sửa đổi tồn kho')}">
+    <meta charset="UTF-8">
+    <title>Biểu mẫu sửa đổi tồn kho</title>
+
+    <style>
+        body {
+            background: url('/images/bg.jpg') no-repeat center center/cover;
+            height: 100vh;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 0;
+        }
+
+        .form-container {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .required {
+            color: red;
+        }
+
+        #navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body th:insert="~{fragments/staff-layout :: staffLayout('Biểu mẫu sửa đổi tồn kho', ~{::content})}">
+
+<div th:fragment="content">
+
+    <div class="overlay"></div>
+
+    <div class="form-container">
+        <div id="navbar">
+            <h4>Edit Product #<span th:text="${id}"></span></h4>
+        </div>
+        <div class="breadcrumb mb-3">
+            <a th:href="@{/staff/inventory}">Products</a> / Edit Product #<span th:text="${id}"></span>
+        </div>
+
+        <form th:action="@{/staff/inventory/update/{id}(id=${id})}" method="post" enctype="multipart/form-data">
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Tên sản phẩm</strong></label>
+                <input type="text" class="form-control" th:value="${product.name}" disabled>
+                <input type="hidden" name="product_name" th:value="${product.name}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Danh mục</strong></label>
+                <input type="text" class="form-control" th:value="${product.category.name}" disabled>
+                <input type="hidden" name="category" th:value="${product.category.name}">
+            </div>
+
+            <div class="mb-3" style="max-width: 250px;">
+                <label class="form-label"><strong>Giá tiền</strong></label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" step="0.01" class="form-control readonly-field"
+                           name="price" th:value="${product.price}" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Tồn kho</strong> <span class="required">*</span></label>
+                <input type="number" class="form-control" name="quantity"
+                       th:value="${product.stockQuantity}" required>
+                <small class="text-muted">Cập nhật số lượng tồn kho hiện tại.</small>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Mô tả</strong></label>
+                <textarea class="form-control" rows="3" th:text="${product.description}" disabled></textarea>
+                <input type="hidden" name="description" th:value="${product.description}">
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                <a th:href="@{/staff/inventory}" class="btn btn-secondary">Hủy bỏ</a>
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

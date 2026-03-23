@@ -16,10 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -133,6 +136,73 @@ public class ProductServiceImpl implements ProductService {
         product.setActive(!product.isActive());
         productRepository.save(product);
     }
+
+    @Override
+    public List<Product> fetchAllProduct() {
+        return (List<Product>) productRepository.findAll();
+
+    }
+
+    @Override
+    public Product isProductExisted(Long id) {
+        return (Product) productRepository.findProductById(id);
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteProduct(Long id) {
+        if(!productRepository.existsById(id)) return false;
+        Product p = findEntityById(id);
+        if(p.isActive()==false) return false;
+        toggleStatus(id);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean updateProductQuantityandPrice(Long id, int quantity, BigDecimal price) {
+        Product p = isProductExisted(id);
+        if(p == null) return false;
+        p.setStockQuantity(quantity);
+        p.setPrice(price);
+        productRepository.save(p);
+        return true;    }
+
+    @Override
+    public boolean createProduct(Product product) {
+        return productRepository.save(product)!=null;
+    }
+
+    @Override
+    public String saveImage(MultipartFile file) {
+
+        try{
+            if(file.isEmpty()){
+                throw new RuntimeException("Empty");
+            }
+            String fileOriginalName = file.getOriginalFilename();
+            String fileName = System.currentTimeMillis() + "_" + fileOriginalName;
+            String uploadDir = "upload/";
+            File uploadFol = new File(uploadDir);
+            if(!uploadFol.exists()) uploadFol.mkdir();
+            File destination = new File(uploadDir+fileName);
+            file.transferTo(destination);
+            return fileName;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }    }
+
+    @Override
+    public long countByStockQuantityLessThan(int quantity) {
+        return productRepository.countByStockQuantityLessThan(quantity);
+    }
+
+    @Override
+    public List<Product> findTop5ByStockQuantityLessThanOrderByStockQuantityAsc(int quantity) {
+        return productRepository.findTop5ByStockQuantityLessThanOrderByStockQuantityAsc(quantity);
+    }
+
     // Trong ProductServiceImpl.java
     private Product findEntityById(Long id) {
         return productRepository.findById(id)

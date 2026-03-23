@@ -4,6 +4,10 @@ import com.group2.ecommerce.dto.product.ProductRequest;
 import com.group2.ecommerce.dto.product.ProductResponse;
 import com.group2.ecommerce.entity.Product;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface ProductService {
 
@@ -16,4 +20,19 @@ public interface ProductService {
     void save(Long id, ProductRequest request) throws java.io.IOException;
 
     void toggleStatus(Long id);
+
+    List<Product> fetchAllProduct();
+
+    Product isProductExisted(Long id);
+    boolean deleteProduct(Long id);
+
+    boolean updateProductQuantityandPrice(Long id, int quantity, BigDecimal price);
+
+    boolean createProduct(Product product);
+
+    String saveImage(MultipartFile file);
+
+    long countByStockQuantityLessThan(int quantity);
+
+    List<Product> findTop5ByStockQuantityLessThanOrderByStockQuantityAsc(int quantity);
 }

@@ -17,4 +17,4 @@ COPY --from=build /app/target/*.jar app.jar
 # Port mặc định thường là 8080
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Xms256m", "-Xmx512m", "-XX:TieredStopAtLevel=1", "-jar", "app.jar"]

@@ -1,24 +1,20 @@
-# Giai đoạn 1: Build ứng dụng bằng Maven
+# Giai đoạn 1: Build
 FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
-
-# Copy toàn bộ mã nguồn vào container
 COPY . .
-
-# Chạy lệnh build của Maven để tạo file jar (bỏ qua chạy test để nhanh hơn)
 RUN mvn clean package -DskipTests
 
-# Giai đoạn 2: Chạy ứng dụng
+# Giai đoạn 2: Run
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
+# Tạo thư mục lưu ảnh và cấp quyền ghi cho ứng dụng
 RUN mkdir -p /app/uploads && chmod 777 /app/uploads
 
+# Chỉ cần COPY một lần duy nhất
 COPY --from=build /app/target/*.jar app.jar
 
-# Copy file jar đã build từ giai đoạn 1 sang giai đoạn 2
-COPY --from=build /app/target/*.jar app.jar
+# Port mặc định thường là 8080
+EXPOSE 8080
 
-# Lệnh khởi chạy
 ENTRYPOINT ["java", "-jar", "app.jar"]
-

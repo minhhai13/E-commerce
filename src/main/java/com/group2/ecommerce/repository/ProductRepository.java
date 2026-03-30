@@ -24,20 +24,21 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByCategoryIdAndIsActiveTrue(Long categoryId, Pageable pageable);
 
     // Filter by category tree (category or any subcategory) + Keyword + Pagination
-    @Query("SELECT p FROM Product p WHERE p.isActive = true " +
+   @Query("SELECT p FROM Product p WHERE p.isActive = true " +
            "AND (:categoryId IS NULL OR p.category.id = :categoryId) " +
-           "AND (:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+           "AND (:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', CAST(:keyword AS string), '%')))")
     Page<Product> findByCategoryTreeAndKeyword(
             @Param("categoryId") Long categoryId,
             @Param("keyword") String keyword,
             Pageable pageable);
     
    @Query("SELECT p FROM Product p WHERE " +
-           "(:nameFilter IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :nameFilter, '%')))")
+           "(:nameFilter IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', CAST(:nameFilter AS string), '%')))")
     Page<Product> findByNameFilter(@Param("nameFilter") String nameFilter, Pageable pageable);
 
+    // 3. Cập nhật hàm này (thêm CAST(:nameFilter AS string))
     @Query("SELECT p FROM Product p WHERE " +
-           "(:nameFilter IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :nameFilter, '%'))) " +
+           "(:nameFilter IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', CAST(:nameFilter AS string), '%'))) " +
            "AND p.category.id IN :categoryIds")
     Page<Product> findByNameFilterAndCategoryIds(@Param("nameFilter") String nameFilter,
                                                  @Param("categoryIds") java.util.List<Long> categoryIds,

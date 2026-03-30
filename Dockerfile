@@ -12,8 +12,13 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
+RUN mkdir -p /app/uploads && chmod 777 /app/uploads
+
+COPY --from=build /app/target/*.jar app.jar
+
 # Copy file jar đã build từ giai đoạn 1 sang giai đoạn 2
 COPY --from=build /app/target/*.jar app.jar
 
 # Lệnh khởi chạy
 ENTRYPOINT ["java", "-jar", "app.jar"]
+

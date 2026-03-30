@@ -8,19 +8,19 @@ import lombok.Data;
 @Data
 public class RegisterRequest {
 
-    @NotBlank(message = "Họ tên không được để trống")
+    @NotBlank(message = "Name cannot be empty")
     private String fullName;
 
-    @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không hợp lệ")
+    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Email invalid")
     private String email;
 
     private String phone;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
-    @Size(min = 8, message = "Mật khẩu phải có ít nhất 8 ký tự") // Tuân thủ BR-20
+    @NotBlank(message = "Password  cannot be empty")
+    @Size(min = 6, message = "Password must be >=6 Characters.")
     private String password;
 
-    @NotBlank(message = "Vui lòng xác nhận lại mật khẩu")
+    @NotBlank(message = "Confirm password.")
     private String confirmPassword;
 }

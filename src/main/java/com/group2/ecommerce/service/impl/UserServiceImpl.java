@@ -78,6 +78,9 @@ public class UserServiceImpl implements UserService{
             if (request.getPassword() == null || request.getPassword().isBlank()) {
                 throw new IllegalArgumentException("Password is required.");
             }
+            if(request.getPassword().length()<6){
+                throw new IllegalArgumentException("Password must be >=6 Characters.");
+            }
             if (userRepository.existsByEmail(request.getEmail())) {
                 throw new IllegalArgumentException("Email '" + request.getEmail() + "' has been used.");
             }
@@ -90,6 +93,9 @@ public class UserServiceImpl implements UserService{
                     .isActive(true)
                     .build();
         } else {
+            if(request.getPassword().length()<6){
+                throw new IllegalArgumentException("Password must be >=6 Characters.");
+            }
             // ── Update ──────────────────────────────────
             if (userRepository.existsByEmailAndIdNot(request.getEmail(), id)) {
                 throw new IllegalArgumentException("Email '" + request.getEmail() + "' has been used.");
@@ -136,12 +142,14 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public void register(RegisterRequest request) {
         if (request.getPassword() == null || request.getPassword().isBlank()) {
-            throw new IllegalArgumentException("Mật khẩu không được để trống khi đăng ký.");
+            throw new IllegalArgumentException("Password can not be empty");
+        }
+        if(!request.getPassword().equals(request.getConfirmPassword())){
+            throw new IllegalArgumentException("Password does not match.");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email đã được sử dụng.");
+            throw new IllegalArgumentException("Email has been used.");
         }
-
         User user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
@@ -156,6 +164,6 @@ public class UserServiceImpl implements UserService{
     // ─────────────── Private helpers ────────────────
     private User findEntityById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy user: " + id));
+                .orElseThrow(() -> new RuntimeException("User does not found: " + id));
     }
 }

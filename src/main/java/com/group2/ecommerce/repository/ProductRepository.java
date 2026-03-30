@@ -24,22 +24,22 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByCategoryIdAndIsActiveTrue(Long categoryId, Pageable pageable);
 
     // Filter by category tree (category or any subcategory) + Keyword + Pagination
-    @Query("SELECT p FROM Product p LEFT JOIN p.category c " +
-            "WHERE p.isActive = true " +
-            "AND (:categoryId IS NULL OR c.id = :categoryId OR c.parent.id = :categoryId) " +
-            "AND (:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    @Query("SELECT p FROM Product p WHERE p.isActive = true " +
+           "AND (:categoryId IS NULL OR p.category.id = :categoryId) " +
+           "AND (:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<Product> findByCategoryTreeAndKeyword(
             @Param("categoryId") Long categoryId,
             @Param("keyword") String keyword,
             Pageable pageable);
-    @Query("SELECT p FROM Product p WHERE " +
-            "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))")
-    Page<Product> findByNameFilter(@Param("name") String name, Pageable pageable);
+    
+   @Query("SELECT p FROM Product p WHERE " +
+           "(:nameFilter IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :nameFilter, '%')))")
+    Page<Product> findByNameFilter(@Param("nameFilter") String nameFilter, Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE " +
-            "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
-            "(p.category.id IN :categoryIds)")
-    Page<Product> findByNameFilterAndCategoryIds(@Param("name") String name,
+           "(:nameFilter IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :nameFilter, '%'))) " +
+           "AND p.category.id IN :categoryIds")
+    Page<Product> findByNameFilterAndCategoryIds(@Param("nameFilter") String nameFilter,
                                                  @Param("categoryIds") java.util.List<Long> categoryIds,
                                                  Pageable pageable);
 }

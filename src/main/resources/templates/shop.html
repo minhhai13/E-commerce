@@ -847,7 +847,7 @@
                     Premium</div>
 
                 <div class="p-image-wrap">
-                    <img th:if="${product.imageName != null}" th:src="@{'/images/' + ${product.imageName}}"
+                    <img th:if="${product.imageName != null}" th:src="@{'/uploads/' + ${product.imageName}}"
                          class="p-img" alt="Product image">
 
                     <div class="p-placeholder" th:unless="${product.imageName != null}">

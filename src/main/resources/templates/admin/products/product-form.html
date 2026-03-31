@@ -74,7 +74,7 @@
 
                             <div class="mt-2" th:if="${productRequest.imageName != null}">
                                 <p class="small text-muted mb-1">Current image:</p>
-                                <img th:src="@{'/images/' + ${productRequest.imageName}}"
+                                <img th:src="@{'/uploads/' + ${productRequest.imageName}}"
                                      style="max-height:120px; border-radius:6px; border:1px solid #dee2e6;" />
                             </div>
                         </div>

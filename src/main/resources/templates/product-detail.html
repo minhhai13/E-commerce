@@ -778,7 +778,7 @@
                 <div class="badge" style="color: #1E293B;" th:if="${product.price > 1000}">Premium</div>
             </div>
 
-            <img class="main-image" th:if="${product.imageName != null}" th:src="@{'/images/' + ${product.imageName}}"
+            <img class="main-image" th:if="${product.imageName != null}" th:src="@{'/uploads/' + ${product.imageName}}"
                 alt="Product image">
 
             <div class="image-placeholder" th:unless="${product.imageName != null}">

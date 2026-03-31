@@ -99,7 +99,7 @@ public class ProductServiceImpl implements ProductService {
         if (file != null && !file.isEmpty()) {
             try {
                 // Định nghĩa đường dẫn lưu file (Trong thư mục static của project)
-                String uploadDir = "src/main/resources/static/images/";
+                String uploadDir = "uploads/";
                 String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
                 Path uploadPath = Paths.get(uploadDir);

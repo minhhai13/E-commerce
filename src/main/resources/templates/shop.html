@@ -291,10 +291,112 @@
             flex: 1;
         }
 
+        /* ── HAMBURGER MENU ── */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .hamburger:hover { background: var(--primary-light); }
+        .hamburger span {
+            display: block;
+            height: 2px;
+            width: 100%;
+            background: var(--text);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 72px;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 5%;
+            flex-direction: column;
+            gap: 0;
+            z-index: 999;
+            animation: menuSlideDown 0.25s ease;
+        }
+        @keyframes menuSlideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu-link {
+            display: flex;
+            align-items: center;
+            padding: 0.9rem 0;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            transition: color 0.2s;
+        }
+        .mobile-menu-link:last-child { border-bottom: none; }
+        .mobile-menu-link:hover { color: var(--primary); }
+
+        /* ── MOBILE FILTER TOGGLE ── */
+        .filter-toggle-btn {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--text);
+            color: white;
+            border: none;
+            padding: 0.65rem 1.25rem;
+            border-radius: 99px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            transition: all 0.2s;
+        }
+        .filter-toggle-btn svg { width: 16px; height: 16px; }
+        .filter-toggle-btn:hover { background: var(--primary); }
+
         @media (max-width: 992px) {
             .shop-container {
                 grid-template-columns: 1fr;
             }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .filter-toggle-btn { display: inline-flex; }
+            .sidebar { display: none; }
+            .sidebar.open { display: block; }
+        }
+
+        @media (max-width: 768px) {
+            .page-title { font-size: 2.5rem; }
+            .shop-toolbar { flex-wrap: wrap; }
+            .search-box input { width: 100%; }
+            .search-box input:focus { width: 100%; }
+            .search-box { flex: 1; }
+            .products-header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+        }
+
+        @media (max-width: 576px) {
+            .page-title { font-size: 2rem; }
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
+            .shop-container { padding: 2rem 4% 4rem; }
+            .topnav { padding: 0 4%; }
         }
 
         /* Sidebar Filters */
@@ -684,7 +786,7 @@
 <body>
 
 <!-- ═══ TOP NAV ═══ -->
-<nav class="topnav">
+<nav class="topnav" style="position: relative;">
     <a class="logo" th:href="@{/}"><span>Shop</span>Zone</a>
 
     <div class="nav-links">
@@ -734,8 +836,23 @@
         <a th:unless="${profileInfo != null}" th:href="@{/login}" class="user-btn" style="padding: 0.5rem 1rem;">
             <span class="user-name" style="padding: 0;">Sign In</span>
         </a>
+
+        <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+        </button>
     </div>
 </nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <a th:href="@{/}" class="mobile-menu-link">🏠 Home</a>
+    <a th:href="@{/shop}" class="mobile-menu-link">🛍️ Shop</a>
+    <a th:href="@{/categories}" class="mobile-menu-link">📂 Categories</a>
+    <a th:href="@{/#about}" class="mobile-menu-link">ℹ️ About Us</a>
+    <a th:href="@{/profile}" th:if="${profileInfo != null}" class="mobile-menu-link" style="color: var(--primary);">👤 My Profile</a>
+    <a th:href="@{/login}" th:unless="${profileInfo != null}" class="mobile-menu-link" style="color: var(--primary);">🔑 Sign In</a>
+    <a th:href="@{/logout}" th:if="${profileInfo != null}" class="mobile-menu-link" style="color: #EF4444;">🚪 Logout</a>
+</div>
 
 <!-- ═══ PAGE HEADER ── -->
 <header class="page-header">
@@ -749,8 +866,14 @@
 <!-- ═══ MAIN CONTENT ═══ -->
 <main class="shop-container">
 
+    <!-- MOBILE FILTER TOGGLE -->
+    <button class="filter-toggle-btn" id="filterToggle" onclick="toggleSidebar()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+        Filters
+    </button>
+
     <!-- SIDEBAR FILTER -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="filter-title">
             Category Filter
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -1033,6 +1156,27 @@
         let val = parseInt(input.value) || 1; val += delta;
         if (val < 1) val = 1; if (val > currentMaxStock) val = currentMaxStock;
         input.value = val;
+    }
+</script>
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu');
+        const btn  = document.getElementById('hamburger');
+        menu.classList.toggle('open');
+        btn.classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('mobileMenu');
+        const btn  = document.getElementById('hamburger');
+        if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.classList.remove('open');
+            btn.classList.remove('open');
+        }
+    });
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('open');
     }
 </script>
 

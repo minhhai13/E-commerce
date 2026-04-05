@@ -22,6 +22,9 @@ public class SePayWebhookController {
     @Value("${sepay.api-key}")
     private String apiKey;
 
+    @Value("${sepay.exchange-rate}")
+    private int exchangeRate;
+
     @GetMapping("/check-status/{orderId}")
     public org.springframework.http.ResponseEntity<String> checkOrderStatus(@PathVariable Long orderId) {
         Order order = orderRepository.findById(orderId).orElse(null);
@@ -73,7 +76,9 @@ public class SePayWebhookController {
             // Nếu có đơn hàng tồn tại
             if (order != null) {
                 // Đối soát xem số tiền có đủ không
-                if (order.getTotalAmount().longValue() == payload.getTransferAmount()) {
+                long expectedVndAmount = order.getTotalAmount().multiply(new java.math.BigDecimal(exchangeRate)).longValue();
+
+                if (expectedVndAmount == payload.getTransferAmount()) {
                     // Nếu còn đang chờ thanh toán
                     if (order.getStatus() == OrderStatus.WAITING_PAYMENT) {
                         order.setStatus(OrderStatus.WAITING_CONFIRMATION);

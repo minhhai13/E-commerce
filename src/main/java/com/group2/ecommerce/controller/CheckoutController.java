@@ -167,13 +167,17 @@ public class CheckoutController {
     @Value("${sepay.bank-id}")
     private String bankId;
 
+    @Value("${sepay.exchange-rate}")
+    private int exchangeRate;
+
     @GetMapping("/success")
     public String showSuccess(@RequestParam("orderId") Long orderId, Model model) {
         Order order = orderService.findOrderById(orderId);
 
         if (order != null && order.getStatus() == com.group2.ecommerce.entity.enums.OrderStatus.WAITING_PAYMENT) {
+            long amountVnd = order.getTotalAmount().multiply(new java.math.BigDecimal(exchangeRate)).longValue();
             String qrUrl = String.format("https://qr.sepay.vn/img?acc=%s&bank=%s&amount=%s&des=DH%s",
-                    bankAcc, bankId, order.getTotalAmount().longValue(), order.getId());
+                    bankAcc, bankId, amountVnd, order.getId());
             model.addAttribute("qrUrl", qrUrl);
         }
 

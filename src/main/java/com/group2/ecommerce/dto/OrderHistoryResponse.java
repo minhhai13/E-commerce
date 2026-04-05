@@ -34,6 +34,8 @@ public class OrderHistoryResponse {
         switch (status) {
             case CANCELLED:
                 return "Cancelled";
+            case WAITING_PAYMENT:
+                return "Waiting for Payment";
             case WAITING_CONFIRMATION:
                 return "Waiting Confirmation";
             case WAITING_PICKUP:

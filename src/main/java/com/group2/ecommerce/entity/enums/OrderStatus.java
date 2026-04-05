@@ -5,10 +5,11 @@ import lombok.Getter;
 @Getter
 public enum OrderStatus {
     CANCELLED(0),
-    WAITING_CONFIRMATION(1),
-    WAITING_PICKUP(2),
-    IN_TRANSIT(3),
-    COMPLETED(4);
+    WAITING_PAYMENT(1),
+    WAITING_CONFIRMATION(2),
+    WAITING_PICKUP(3),
+    IN_TRANSIT(4),
+    COMPLETED(5);
 
     private final int value;
 

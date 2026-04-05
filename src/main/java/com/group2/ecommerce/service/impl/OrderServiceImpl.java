@@ -141,7 +141,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = Order.builder()
                 .user(user)
                 .coupon(appliedCoupon)
-                .status(OrderStatus.WAITING_CONFIRMATION)
+                .status(OrderStatus.WAITING_PAYMENT)
                 .subtotal(subtotal)
                 .discountAmount(discountAmount)
                 .totalAmount(totalAmount)

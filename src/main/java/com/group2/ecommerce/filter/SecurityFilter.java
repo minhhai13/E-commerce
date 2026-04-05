@@ -40,7 +40,8 @@ public class SecurityFilter implements Filter {
                 || relativePath.equals("/categories")
                 || relativePath.startsWith("/products/")
                 || relativePath.startsWith("/cart")
-                || relativePath.startsWith("/uploads/")) {
+                || relativePath.startsWith("/images/")
+                || relativePath.startsWith("/api/sepay-webhook")) {
             chain.doFilter(request, response);
             return;
         }

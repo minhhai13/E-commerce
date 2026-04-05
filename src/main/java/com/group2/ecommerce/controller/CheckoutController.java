@@ -13,6 +13,7 @@ import com.group2.ecommerce.service.OrderService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -160,8 +161,22 @@ public class CheckoutController {
         }
     }
 
+    @Value("${sepay.bank-acc}")
+    private String bankAcc;
+
+    @Value("${sepay.bank-id}")
+    private String bankId;
+
     @GetMapping("/success")
     public String showSuccess(@RequestParam("orderId") Long orderId, Model model) {
+        Order order = orderService.findOrderById(orderId);
+
+        if (order != null && order.getStatus() == com.group2.ecommerce.entity.enums.OrderStatus.WAITING_PAYMENT) {
+            String qrUrl = String.format("https://qr.sepay.vn/img?acc=%s&bank=%s&amount=%s&des=DH%s",
+                    bankAcc, bankId, order.getTotalAmount().longValue(), order.getId());
+            model.addAttribute("qrUrl", qrUrl);
+        }
+
         model.addAttribute("orderId", orderId);
         return "checkout-success";
     }

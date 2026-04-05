@@ -138,30 +138,64 @@
 
 <body>
 
-    <div class="success-card">
-        <div class="icon-circle">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 48px; height: 48px;">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-            </svg>
-        </div>
-
-        <h1>Thank You!</h1>
-        <p>Your order has been placed successfully. We will contact you soon for confirmation.</p>
-        
-        <div class="order-id">
-            Order ID: #<span th:text="${orderId}">12345</span>
-        </div>
-
-        <div class="button-group">
-            <a th:href="@{/profile/orders}" class="btn btn-primary">View My Orders</a>
-            <a th:href="@{/shop}" class="btn btn-secondary">Continue Shopping</a>
-        </div>
+<div class="success-card">
+    <div class="icon-circle">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 48px; height: 48px;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+        </svg>
     </div>
 
-    <div class="footer">
-        &copy; 2026 ShopZone. All rights reserved.
+    <h1 th:text="${qrUrl != null} ? 'Thanh toán hoá đơn' : 'Thank You!'">Thank You!</h1>
+    <p th:text="${qrUrl != null} ? 'Vui lòng sử dụng App Ngân hàng quét QR Code bên dưới để thanh toán.' : 'Your order has been placed successfully. We will contact you soon for confirmation.'">Your order has been placed successfully. We will contact you soon for confirmation.</p>
+
+    <div class="order-id">
+        Order ID: #<span th:text="${orderId}">12345</span>
     </div>
 
+    <div th:if="${qrUrl != null}" class="qr-container" id="qrContainer" style="margin-bottom: 2rem;">
+        <img th:src="${qrUrl}" alt="Mã QR Thanh Toán SePay" style="max-width: 250px; border-radius: 12px; border: 2px solid var(--border); padding: 5px;">
+    </div>
+
+    <div id="successCheckmark" style="display: none; margin-bottom: 2rem; color: var(--success); text-align: center;">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 80px; height: 80px; margin: 0 auto;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h2 style="margin-top: 1rem; color: var(--success);">Thanh toán thành công!</h2>
+        <p style="color: var(--text-muted);">Hệ thống đã xác nhận thanh toán tự động.</p>
+    </div>
+
+    <div class="button-group">
+        <a th:href="@{/profile/orders}" class="btn btn-primary">View My Orders</a>
+        <a th:href="@{/shop}" class="btn btn-secondary">Continue Shopping</a>
+    </div>
+</div>
+
+<div class="footer">
+    &copy; 2026 ShopZone. All rights reserved.
+</div>
+
+<script th:inline="javascript">
+    /*[# th:if="${qrUrl != null}"]*/
+    const orderId = /*[[${orderId}]]*/ null;
+    if (orderId) {
+        const checkInterval = setInterval(() => {
+            fetch(`/api/sepay-webhook/check-status/${orderId}`)
+                .then(response => response.text())
+                .then(status => {
+                    if (status !== 'WAITING_PAYMENT') {
+                        clearInterval(checkInterval);
+                        document.getElementById('qrContainer').style.display = 'none';
+                        document.getElementById('successCheckmark').style.display = 'block';
+                        document.querySelector('h1').innerText = 'Hoàn Tất!';
+                        document.querySelector('h1').style.color = 'var(--success)';
+                        document.querySelector('p').innerText = 'Cảm ơn bạn đã mua sắm. Đơn hàng sẽ sớm được xử lý.';
+                    }
+                })
+                .catch(e => console.log('Polling error:', e));
+        }, 3000); // 3 seconds interval
+    }
+    /*[/]*/
+</script>
 </body>
 
 </html>
